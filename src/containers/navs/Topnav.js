@@ -31,9 +31,11 @@ import {
 
 import { MobileMenuIcon, MenuIcon } from 'components/svg';
 import { getDirection, setDirection } from 'helpers/Utils';
-import TopnavEasyAccess from './Topnav.EasyAccess';
 import TopnavNotifications from './Topnav.Notifications';
 import TopnavDarkSwitch from './Topnav.DarkSwitch';
+
+
+import { AmplifySignOut } from '@aws-amplify/ui-react';
 
 const TopNav = ({
   intl,
@@ -280,6 +282,9 @@ const TopNav = ({
               <DropdownItem divider />
               <DropdownItem onClick={() => handleLogout()}>
                 Sign out
+              </DropdownItem>
+              <DropdownItem>
+                <AmplifySignOut />
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
