@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-chegbehomes-dev-154617-authRole",
+      "UnauthRoleArn": "arn:aws:iam::085770931126:role/amplify-chegbehomes-dev-154617-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::085770931126:role/amplify-chegbehomes-dev-154617-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-chegbehomes-dev-154617-deployment",
+      "UnauthRoleName": "amplify-chegbehomes-dev-154617-unauthRole",
+      "StackName": "amplify-chegbehomes-dev-154617",
+      "StackId": "arn:aws:cloudformation:us-east-1:085770931126:stack/amplify-chegbehomes-dev-154617/b16a16b0-1fcd-11ed-a9dc-0aa0ddd5f663",
+      "AmplifyAppId": "dyyyrqogcmjiz"
+    },
+    "categories": {
+      "auth": {
+        "chegbehomesfce33882": {}
+      }
+    }
+  }
+}
