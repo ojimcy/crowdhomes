@@ -27,7 +27,7 @@ const ProtectedRoute = ({
           if (roles.includes(currentUser.role)) {
             return <Component {...props} />;
           }
-          return (
+          return (user/
             <Redirect
               to={{
                 pathname: '/unauthorized',

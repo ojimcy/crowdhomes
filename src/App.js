@@ -19,9 +19,7 @@ import {
 import { getDirection } from "./helpers/Utils";
 import { ProtectedRoute } from "./helpers/authHelper";
 
-import Amplify from "aws-amplify";
-import { withAuthenticator } from "@aws-amplify/ui-react";
-import awsconfig from "../src/aws-exports";
+
 
 const ViewApp = React.lazy(() =>
   import(/* webpackChunkName: "views-app" */ "./views/app")
@@ -35,8 +33,6 @@ const ViewError = React.lazy(() =>
 const ViewUnauthorized = React.lazy(() =>
   import(/* webpackChunkName: "views-error" */ "./views/unauthorized")
 );
-
-Amplify.configure(awsconfig);
 
 class App extends React.Component {
   constructor(props) {
@@ -108,4 +104,4 @@ const mapActionsToProps = {};
 export default connect(
   mapStateToProps,
   mapActionsToProps
-)(withAuthenticator(App));
+)(App);

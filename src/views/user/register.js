@@ -1,187 +1,310 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Card, CardTitle, FormGroup, Label, Button } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { registerUser } from 'redux/actions';
+import { AmplifySignUp } from "@aws-amplify/ui-react";
+import { Auth } from "@aws-amplify/auth";
+import { useReducer, useRef } from "react";
+import { dispatchToastHubEvent } from "@aws-amplify/ui-components/dist/collection/common/helpers";
+import { handleSignIn } from "@aws-amplify/ui-components/dist/collection/common/auth-helpers";
+import { AuthState } from "@aws-amplify/ui-components";
+import constants from "../../constants/authConstants";
+import { validate, match, isFormValid } from "../../utility/validate";
+import { errorStyle } from "../../utility/inlineStyle";
+import { setFormFocus } from "../../utility/helpers";
+import ValidationMessage from "../../components/common/ValidateMessage";
 
-import IntlMessages from 'helpers/IntlMessages';
-import { Colxx } from 'components/common/CustomBootstrap';
-import { Formik, Form, Field } from 'formik';
-import { NotificationManager } from 'components/common/react-notifications';
-
-const validateEmail = (value) => {
-  let error;
-  if (!value) {
-    error = 'Please enter your email address';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-    error = 'Invalid email address';
+const formStateReducer = (formState, action) => {
+  const { type, name, rules, value } = action;
+  if (type === "submit") {
+    setFormFocus(formState);
+    return {
+      ...formState,
+    };
   }
-  return error;
+
+  if (type === "error") {
+    return {
+      ...formState,
+      isFormValid: false,
+      password: {
+        value: "",
+        valid: false,
+        matched: false,
+        focused: true,
+      },
+      confirmPassword: {
+        value: "",
+        valid: false,
+        matched: false,
+        focused: true,
+      },
+    };
+  }
+  const isValid = validate({ value, type, rules });
+
+  if (rules["match"] !== undefined) {
+    formState[rules["match"].field].valid = isValid;
+    formState[rules["match"].field].matched = isValid;
+  }
+
+  const newFormState = {
+    ...formState,
+    [name]: {
+      focused: true,
+      value: value,
+      valid: isValid,
+      matched:
+        rules["match"] !== undefined
+          ? match({ ruleValue: rules.match?.value, inputValue: value })
+          : undefined,
+    },
+  };
+  newFormState.isFormValid = isFormValid(newFormState);
+  return newFormState;
 };
 
-const Register = ({ history, loading, error, registerUserAction }) => {
-  const [email] = useState('');
-  const [username] = useState('');
-  const [password] = useState('');
-  const [firstName] = useState('');
-  const [lastName] = useState('');
-  const [phoneNumber] = useState('');
-  const [referralId] = useState(''); // TODO: fetch from the url
-
-  useEffect(() => {
-    if (error) {
-      NotificationManager.warning(
-        error,
-        'Registration Error',
-        3000,
-        null,
-        null,
-        ''
-      );
-    }
-  }, [error]);
-
-  const onUserRegister = (values) => {
-    if (!loading) {
-      registerUserAction(values, history);
+const Register = () => {
+  const amplifySignUpRef = useRef();
+  const setAmplifySignUpRef = (node) => {
+    if (node) {
+      const array = [...node.children];
+      if (array.some((val) => val.nodeName === "AMPLIFY-SIGN-UP")) {
+        amplifySignUpRef.current = array.find(
+          (val) => val.nodeName === "AMPLIFY-SIGN-UP"
+        );
+      }
     }
   };
-
-  const initialValues = {
+  const [formState, dispatch] = useReducer(formStateReducer, {
+    isFormValid: false,
+    email: {
+      valid: false,
+      focused: false,
+      value: "",
+    },
+    password: {
+      valid: false,
+      focused: false,
+      value: "",
+      matched: false,
+    },
+    confirmPassword: {
+      valid: false,
+      focused: false,
+      value: "",
+      matched: false,
+    },
+    firstname: {
+      valid: false,
+      focused: false,
+      value: "",
+    },
+    lastname: {
+      valid: false,
+      focused: false,
+      value: "",
+    },
+    phone: {
+      valid: false,
+      focused: false,
+      value: "",
+    },
+  });
+  const handleValidation = ({ ev, rules }) => {
+    const { value, type, name } = ev.target;
+    dispatch({ type, name, rules, value });
+  };
+  const {
+    isFormValid,
     email,
-    username,
     password,
-    firstName,
-    lastName,
-    phoneNumber,
-    referralId,
+    confirmPassword,
+    firstname,
+    lastname,
+    phone,
+  } = formState;
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();
+    if (!isFormValid) {
+      dispatch({ type: "submit" });
+      return;
+    }
+    try {
+      const authData = {
+        username: email.value,
+        password: password.value,
+        attributes: {
+          email: email.value,
+          phone_number: `+44${phone.value}`,
+          given_name: firstname.value,
+          family_name: lastname.value,
+        },
+      };
+      const data = await Auth.signUp(authData);
+      if (data.userConfirmed) {
+        await handleSignIn(
+          email.value,
+          password.value,
+          amplifySignUpRef.current.handleAuthStateChange
+        );
+      } else {
+        const signUpAttrs = { ...authData };
+        amplifySignUpRef.current.handleAuthStateChange(
+          AuthState.ConfirmSignUp,
+          {
+            ...data.user,
+            signUpAttrs,
+          }
+        );
+      }
+    } catch (error) {
+      dispatch({ type: "error" });
+      dispatchToastHubEvent(error);
+    }
   };
-
+  const formFields = () => {
+    return [
+      {
+        type: "email",
+        label: constants.EMAIL_LABEL,
+        placeholder: constants.EMAIL_PLACEHOLDER,
+        value: email.value,
+        inputProps: {
+          autocomplete: "off",
+          onBlur: (e) => {
+            handleValidation({
+              ev: e,
+              rules: { required: true },
+            });
+          },
+          style: !email.valid && email.focused ? errorStyle : null,
+        },
+      },
+      {
+        type: "password",
+        label: constants.PASSWORD_LABEL,
+        placeholder: constants.PASSWORD_PLACEHOLDER,
+        value: password.value,
+        inputProps: {
+          autocomplete: "off",
+          style: !password.valid && password.focused ? errorStyle : null,
+          onblur: (e) =>
+            handleValidation({
+              rules: {
+                required: true,
+                match: {
+                  value: confirmPassword.value,
+                  field: "confirmPassword",
+                },
+                regex: {
+                  value: /^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
+                },
+              },
+              ev: e,
+            }),
+        },
+      },
+      {
+        type: "password",
+        label: constants.CONFIRM_PASSWORD_LABEL,
+        placeholder: constants.CONFIRM_PASSWORD_PLACEHOLDER,
+        value: confirmPassword.value,
+        inputProps: {
+          name: "confirmPassword",
+          autocomplete: "off",
+          style:
+            !confirmPassword.valid && confirmPassword.focused
+              ? errorStyle
+              : null,
+          onblur: (e) =>
+            handleValidation({
+              rules: {
+                required: true,
+                match: { value: password.value, field: "password" },
+                regex: {
+                  value: /^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
+                },
+              },
+              ev: e,
+            }),
+        },
+      },
+      {
+        type: "text",
+        label: `${constants.FIRSTNAME_LABEL} ${constants.REQUIRED_LABEL}`,
+        placeholder: constants.FIRSTNAME_PLACEHOLDER,
+        value: firstname.value,
+        inputProps: {
+          name: "firstname",
+          autocomplete: "off",
+          onBlur: (e) => {
+            handleValidation({
+              ev: e,
+              rules: { required: true },
+            });
+          },
+          style: !firstname.valid && firstname.focused ? errorStyle : null,
+        },
+      },
+      {
+        type: "text",
+        label: `${constants.LASTNAME_LABEL} ${constants.REQUIRED_LABEL}`,
+        placeholder: constants.LASTNAME_PLACEHOLDER,
+        value: lastname.value,
+        inputProps: {
+          name: "lastname",
+          autocomplete: "off",
+          onBlur: (e) => {
+            handleValidation({
+              ev: e,
+              rules: { required: true },
+            });
+          },
+          style: !lastname.valid && lastname.focused ? errorStyle : null,
+        },
+      },
+      {
+        type: "tel",
+        label: constants.PHONE_LABEL,
+        placeholder: constants.PHONE_PLACEHOLDER,
+        value: phone.value,
+        inputProps: {
+          name: "phone",
+          autocomplete: "off",
+          onBlur: (e) => {
+            handleValidation({
+              ev: e,
+              rules: {
+                required: true,
+                regex: { value: /^(0[1-9][0-9]{8,9})$/ },
+              },
+            });
+          },
+          style: !phone.valid && phone.focused ? errorStyle : null,
+        },
+      },
+    ];
+  };
   return (
-    <Row className="h-100">
-      <Colxx xxs="12" md="10" className="mx-auto my-auto">
-        <Card className="auth-card">
-          <div className="position-relative image-side ">
-            <p className="text-white h2">WELCOME TO YOUR FINANCIAL FREEDOM</p>
-            <p className="white mb-0">
-              Please use this form to register. <br />
-              If you are a member, please{' '}
-              <NavLink to="/user/login" className="white">
-                login
-              </NavLink>
-              .
-            </p>
-          </div>
-          <div className="form-side">
-            <NavLink to="/" className="white">
-              <span className="logo-single" />
-            </NavLink>
-            <CardTitle className="mb-4">
-              <IntlMessages id="user.register" />
-            </CardTitle>
-
-            <Formik initialValues={initialValues} onSubmit={onUserRegister}>
-              {({ errors, touched }) => (
-                <Form className="av-tooltip tooltip-label-bottom">
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>Referral ID</Label>
-                    <Field className="form-control" name="referralId" />
-                    {errors.referralId && touched.referralId && (
-                      <div className="invalid-feedback d-block">
-                        {errors.referralId}
-                      </div>
-                    )}
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>First Name</Label>
-                    <Field className="form-control" name="firstName" />
-                    {errors.firstName && touched.firstName && (
-                      <div className="invalid-feedback d-block">
-                        {errors.firstName}
-                      </div>
-                    )}
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>Last Name</Label>
-                    <Field className="form-control" name="lastName" />
-                    {errors.lastName && touched.lastName && (
-                      <div className="invalid-feedback d-block">
-                        {errors.lastName}
-                      </div>
-                    )}
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>Phone Number</Label>
-                    <Field className="form-control" name="phoneNumber" />
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>
-                      <IntlMessages id="user.email" />
-                    </Label>
-                    <Field
-                      className="form-control"
-                      name="email"
-                      type="email"
-                      validate={validateEmail}
-                    />
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>Username</Label>
-                    <Field className="form-control" name="username" />
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label  mb-4">
-                    <Label>
-                      <IntlMessages
-                        id="user.password"
-                        defaultValue={password}
-                      />
-                    </Label>
-                    <Field
-                      className="form-control"
-                      name="password"
-                      type="password"
-                    />
-                  </FormGroup>
-
-                  <div className="d-flex justify-content-end align-items-center">
-                    <Button
-                      color="primary"
-                      className={`btn-shadow btn-multiple-state ${
-                        loading ? 'show-spinner' : ''
-                      }`}
-                      size="lg"
-                    >
-                      <span className="spinner d-inline-block">
-                        <span className="bounce1" />
-                        <span className="bounce2" />
-                        <span className="bounce3" />
-                      </span>
-                      <span className="label">
-                        <IntlMessages id="user.register-button" />
-                      </span>
-                    </Button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </Card>
-      </Colxx>
-    </Row>
+    <div slot="sign-up" ref={setAmplifySignUpRef}>
+      <AmplifySignUp formFields={formFields()} handleSubmit={handleSubmit}>
+        <div slot="header-subtitle">
+          {!email.valid && email.focused && (
+            <ValidationMessage message="Please enter a valid email address" />
+          )}
+          {(!password.valid || !confirmPassword.valid) &&
+            (password.focused || confirmPassword.focused) && (
+              <ValidationMessage message="Please enter and confirm your password (minimum 8 characters with at least one number)" />
+            )}
+          {!firstname.valid && firstname.focused && (
+            <ValidationMessage message="Please enter your firstname" />
+          )}
+          {!lastname.valid && lastname.focused && (
+            <ValidationMessage message="Please enter your lastname" />
+          )}
+          {!phone.valid && phone.focused && (
+            <ValidationMessage message="Please enter a valid phone number" />
+          )}
+        </div>
+      </AmplifySignUp>
+    </div>
   );
 };
-
-const mapStateToProps = ({ authUser }) => {
-  const { loading, error } = authUser;
-  return { loading, error };
-};
-
-export default connect(mapStateToProps, {
-  registerUserAction: registerUser,
-})(Register);
+export default Register;
