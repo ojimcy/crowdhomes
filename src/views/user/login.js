@@ -6,10 +6,6 @@ import { useReducer, useRef } from "react";
 import ValidationMessage from "../../components/common/ValidateMessage";
 import {setFormFocus} from "../../utility/helpers";
 
-import { Amplify } from "aws-amplify";
-import awsconfig from '../../aws-exports'
-
-Amplify.configure(awsconfig)
 
 const formStateReducer = (formState, action) => {
   const { type, name, rules, value } = action;
@@ -60,18 +56,6 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (ev) => {
-    ev.preventDefault();
-    if (!isFormValid) {
-      dispatch({ type: "submit" });
-      return;
-    }
-    amplifySignInRef.current.handleSubmit(ev);
-  };
-  const handleValidation = ({ ev, rules }) => {
-    const { value, type, name } = ev.target;
-    dispatch({ type, name, rules, value });
-  };
   const formFields = () => {
     return [
       {
