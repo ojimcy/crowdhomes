@@ -1,22 +1,34 @@
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { configureStore } from './redux/store';
-import reportWebVitals from './reportWebVitals';
+import React, { Suspense } from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { configureStore } from "./redux/store";
+import reportWebVitals from "./reportWebVitals";
 
-const App = React.lazy(() => import(/* webpackChunkName: "App" */ './App'));
+import { Web3ReactProvider } from "@web3-react/core";
+import Web3 from "web3";
+import MetamaskProvider from "weeb3/MetamaskProvider";
+
+const App = React.lazy(() => import(/* webpackChunkName: "App" */ "./App"));
+
+function getLibrary(provider) {
+  return new Web3(provider);
+}
 
 const Main = () => {
   return (
     <Provider store={configureStore()}>
       <Suspense fallback={<div className="loading" />}>
-        <App />
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <MetamaskProvider>
+            <App />
+          </MetamaskProvider>
+        </Web3ReactProvider>
       </Suspense>
     </Provider>
   );
 };
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+ReactDOM.render(<Main />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
