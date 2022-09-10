@@ -28,13 +28,13 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <script>
-    var theme = "light.purplemonster";
+    var theme = "light.bluenavy";
     try {
       if (localStorage.getItem("__theme_selected_color")) {
         theme = localStorage.getItem("__theme_selected_color");
       }
     } catch (error) {
-      theme = "light.purplemonster"
+      theme = "light.bluenavy"
     }
     if (theme.indexOf("dark") !== -1) {
       document.documentElement.style.background = "#1b191b";

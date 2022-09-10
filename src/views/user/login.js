@@ -1,121 +1,145 @@
-import { AmplifySignIn, AmplifyButton } from "@aws-amplify/ui-react";
-import constants from "../../constants/authConstants";
-import {validate, isFormValid} from "../../utility/validate";
-import { errorStyle } from "../../utility/inlineStyle";
-import { useReducer, useRef } from "react";
-import ValidationMessage from "../../components/common/ValidateMessage";
-import {setFormFocus} from "../../utility/helpers";
+import React, { useState, useEffect } from 'react';
+import { Row, Card, CardTitle, Label, FormGroup, Button } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import { Formik, Form, Field } from 'formik';
+import { NotificationManager } from 'components/common/react-notifications';
 
-const formStateReducer = (formState, action) => {
-  const { type, name, rules, value } = action;
-  if (type === "submit") {
-    setFormFocus(formState);
-    return {
-      ...formState,
-    };
+import { loginUser } from 'redux/actions';
+import { Colxx } from 'components/common/CustomBootstrap';
+import IntlMessages from 'helpers/IntlMessages';
+
+const validatePassword = (value) => {
+  let error;
+  if (!value) {
+    error = 'Please enter your password';
+  } else if (value.length < 4) {
+    error = 'Value must be longer than 3 characters';
   }
-  const isValid = validate({ value, type, rules });
-  const newFormState = {
-    ...formState,
-    [name]: {
-      focused: true,
-      value: value,
-      valid: isValid,
-    },
-  };
-  newFormState.isFormValid = isFormValid(newFormState);
-  return newFormState;
+  return error;
 };
 
-const Login = () => {
-  const [formState, dispatch] = useReducer(formStateReducer, {
-    isFormValid: false,
-    email: {
-      valid: false,
-      focused: false,
-      value: "",
-    },
-    password: {
-      valid: false,
-      focused: false,
-      value: "",
-    }
-  });
+const Login = ({ history, loading, error, loginUserAction }) => {
+  const [email] = useState('');
+  const [password] = useState('');
 
-  const {isFormValid, email, password} = formState;
-  const amplifySignInRef = useRef();
-  const setAmplifySignInRef = (node) => {
-    if (node) {
-      const array = [...node.children];
-      if (array.some((val) => val.nodeName === "AMPLIFY-SIGN-IN")) {
-        amplifySignInRef.current = array.find(
-          (val) => val.nodeName === "AMPLIFY-SIGN-IN"
+  useEffect(() => {
+    if (error) {
+      if (error === 'user.login-to-continue') {
+        NotificationManager.success(
+          error,
+          'Account Created',
+          3000,
+          null,
+          null,
+          ''
         );
+        return;
+      }
+      NotificationManager.warning(error, 'Login Error', 3000, null, null, '');
+    }
+  }, [error]);
+
+  const onUserLogin = (values) => {
+    if (!loading) {
+      if (values.email !== '' && values.password !== '') {
+        loginUserAction(values, history);
       }
     }
   };
 
-  const formFields = () => {
-    return [
-      {
-        type: "email",
-        label: constants.EMAIL_LABEL,
-        placeholder: constants.EMAIL_PLACEHOLDER,
-        value: email.value,
-        inputProps: {
-          autocomplete: "off",
-          onBlur: (e) => {
-            handleValidation({
-              ev: e,
-              rules: { required: true },
-            });
-          },
-          style:
-            !email.valid && email.focused ? errorStyle : null,
-        },
-      },
-      {
-        type: "password",
-        label: constants.PASSWORD_LABEL,
-        placeholder: constants.PASSWORD_PLACEHOLDER,
-        value: password.value,
-        inputProps: {
-          autocomplete: "off",
-          style:
-            !password.valid && password.focused
-              ? errorStyle
-              : null,
-          onblur: (e) =>
-            handleValidation({
-              rules: { required: true },
-              ev: e,
-            }),
-        },
-      },
-    ];
-  };
+  const initialValues = { email, password };
+
   return (
-    <div ref={setAmplifySignInRef} slot="sign-in">
-      <AmplifySignIn formFields={formFields()}>
-        <div slot="header-subtitle">
-          {!email.valid && email.focused && (
-            <ValidationMessage message="Please enter a valid email address" />
-          )}
-          {!password.valid && password.focused && (
-            <ValidationMessage message="Please enter a valid password" />
-          )}
-        </div>
-        <AmplifyButton
-          slot="primary-footer-content"
-          type="button"
-          data-test="sign-in-sign-in-button"
-          handleButtonClick={handleSubmit}
-        >
-          Sign In
-        </AmplifyButton>
-      </AmplifySignIn>
-    </div>
+    <Row className="h-100">
+      <Colxx xxs="12" md="10" className="mx-auto my-auto">
+        <Card className="auth-card">
+          <div className="position-relative image-side ">
+            <p className="text-white h2">WELCOME TO YOUR FINANCIAL FREEDOM</p>
+            <p className="white mb-0">
+              Please use your credentials to login.
+              <br />
+              If you are not a member, please click{' '}
+              <NavLink to="/user/register" className="white" style={{fontWeight: 'bolder'}}>
+                 here to register
+              </NavLink>
+              .
+            </p>
+          </div>
+          <div className="form-side">
+            <NavLink to="/" className="white">
+              <span className="logo-single" />
+            </NavLink>
+            <CardTitle className="mb-4">
+              <IntlMessages id="user.login-title" />
+            </CardTitle>
+
+            <Formik initialValues={initialValues} onSubmit={onUserLogin}>
+              {({ errors, touched }) => (
+                <Form className="av-tooltip tooltip-label-bottom">
+                  <FormGroup className="form-group has-float-label">
+                    <Label>
+                      <IntlMessages id="user.username" />
+                    </Label>
+                    <Field className="form-control" name="email" />
+                    {errors.email && touched.email && (
+                      <div className="invalid-feedback d-block">
+                        {errors.email}
+                      </div>
+                    )}
+                  </FormGroup>
+                  <FormGroup className="form-group has-float-label">
+                    <Label>
+                      <IntlMessages id="user.password" />
+                    </Label>
+                    <Field
+                      className="form-control"
+                      type="password"
+                      name="password"
+                      validate={validatePassword}
+                    />
+                    {errors.password && touched.password && (
+                      <div className="invalid-feedback d-block">
+                        {errors.password}
+                      </div>
+                    )}
+                  </FormGroup>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <NavLink to="/user/forgot-password">
+                      <IntlMessages id="user.forgot-password-question" />
+                    </NavLink>
+                    <Button
+                      color="primary"
+                      className={`btn-shadow btn-multiple-state ${
+                        loading ? 'show-spinner' : ''
+                      }`}
+                      size="lg"
+                    >
+                      <span className="spinner d-inline-block">
+                        <span className="bounce1" />
+                        <span className="bounce2" />
+                        <span className="bounce3" />
+                      </span>
+                      <span className="label">
+                        <IntlMessages id="user.login-button" />
+                      </span>
+                    </Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </Card>
+      </Colxx>
+    </Row>
   );
 };
-export default Login;
+const mapStateToProps = ({ authUser }) => {
+  const { loading, error } = authUser;
+  return { loading, error };
+};
+
+export default connect(mapStateToProps, {
+  loginUserAction: loginUser,
+})(Login);
