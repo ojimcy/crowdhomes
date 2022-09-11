@@ -23,13 +23,7 @@ const Profile = ({ currentUser, match }) => {
         <Colxx xxs="12">
           <Card>
             <div className="position-absolute card-top-buttons">
-              <button
-                onClick={() => setShowEditProfileModal(true)}
-                type="button"
-                className="btn btn-outline-primary"
-              >
-                Edit Profile
-              </button>
+              <span>ConnectedWallet</span>
             </div>
             <EditProfileModal
               currentUser={currentUser}
@@ -37,23 +31,23 @@ const Profile = ({ currentUser, match }) => {
               handleClose={() => setShowEditProfileModal(false)}
             />
             <CardHeader>
-              <p className="h2 mt-3">Account Details</p>
+              <p className="h2 mt-3">Profile</p>
             </CardHeader>
             <CardBody>
               <Row>
                 <Colxx xxs="12">
-                  <Label>Name</Label>
+                  <Label>Package</Label>
                   <p className="info-text">
-                    {currentUser.last_name} {currentUser.first_name}
+                    Gold
                   </p>
                 </Colxx>
                 <Colxx xxs="12">
-                  <Label>Email</Label>
-                  <p className="info-text">{currentUser.email}</p>
+                  <Label>Account ID</Label>
+                  <p className="info-text">1</p>
                 </Colxx>
                 <Colxx xxs="12">
-                  <Label>Phone Number</Label>
-                  <p className="info-text">{currentUser.phone_number}</p>
+                  <Label>Referral ID</Label>
+                  <p className="info-text">0</p>
                 </Colxx>
               </Row>
             </CardBody>

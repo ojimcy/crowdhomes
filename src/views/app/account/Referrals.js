@@ -4,17 +4,16 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Card, CardBody, CardHeader, Label, Row } from 'reactstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
-import './profile.css';
-import EditProfileModal from 'containers/account/EditProfiltModal';
+// import './profile.css';
 
-const Profile = ({ currentUser, match }) => {
+const Referrals = ({ currentUser, match }) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
 
   return (
     <>
       <Row>
         <Colxx xxs="12">
-          <Breadcrumb heading="menu.account.profile" match={match} />
+          <Breadcrumb heading="menu.account.referrals" match={match} />
           <Separator className="mb-5" />
         </Colxx>
       </Row>
@@ -31,11 +30,6 @@ const Profile = ({ currentUser, match }) => {
                 Edit Profile
               </button>
             </div>
-            <EditProfileModal
-              currentUser={currentUser}
-              showModal={showEditProfileModal}
-              handleClose={() => setShowEditProfileModal(false)}
-            />
             <CardHeader>
               <p className="h2 mt-3">Account Details</p>
             </CardHeader>
@@ -72,4 +66,4 @@ const mapStateToProps = ({ authUser }) => {
   };
 };
 
-export default injectIntl(connect(mapStateToProps, {})(Profile));
+export default injectIntl(connect(mapStateToProps, {})(Referrals));

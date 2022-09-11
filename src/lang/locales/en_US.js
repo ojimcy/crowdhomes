@@ -38,7 +38,6 @@ module.exports = {
   'menu.dashboard': 'Dashboard',
   'menu.account': 'Account',
   'menu.account.profile': 'Profile',
-  'menu.account.team': 'My Team',
   'menu.wallet': 'Wallet',
   'menu.wallet.deposits': 'Deposits',
   'menu.wallet.withdrawals': 'Withdrawals',
