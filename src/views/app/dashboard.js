@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Button, Card, CardBody, Row } from 'reactstrap';
 import { Colxx, Separator } from 'components/common/CustomBootstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
-import AccountBalance from 'containers/dashboards/account-balance/AccountBalance';
 import SubscriptionBox from 'containers/dashboards/subscription-box/SubscriptionBox';
 import {
   getActiveSubscription,
@@ -44,9 +43,6 @@ const Dashboard = ({
           <Separator className="mb-5" />
         </Colxx>
       </Row>
-
-      <AccountBalance />
-
       <Row>
         {activeSubscription ? (
           <>

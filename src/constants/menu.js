@@ -24,6 +24,16 @@ const data = [
         label: 'menu.account.team',
         to: `${adminRoot}/account/team`,
       },
+      {
+        icon: 'simple-icon-paper-plane',
+        label: 'menu.account.referrals',
+        to: `${adminRoot}/account/referrals`,
+      },
+      {
+        icon: 'simple-icon-paper-plane',
+        label: 'menu.account.matrix',
+        to: `${adminRoot}/account/matrix`,
+      },
     ],
   },
   {

@@ -54,6 +54,8 @@ module.exports = {
   'menu.search': 'Search',
   'menu.docs': 'Docs',
   'menu.blank-page': 'Blank Page',
+  'menu.account.referrals': 'Referrals',
+  'menu.account.matrix': 'Matrix',
 
   /* 04.Error Page */
   'pages.error-title': 'Ooops... looks like an error occurred!',
