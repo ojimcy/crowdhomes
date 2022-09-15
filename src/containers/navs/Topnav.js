@@ -22,31 +22,22 @@ import { adminRoot } from "constants/defaultValues";
 
 import { MobileMenuIcon, MenuIcon } from "components/svg";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import { useAccount, useDisconnect } from "wagmi";
 import ConnectWalletModal from "views/app/account/ConnectWalletModal";
+import SwitchAccountModal from "views/app/account/SwitchAccountModal";
 
 const TopNav = ({
-  intl,
-  history,
   containerClassnames,
   menuClickCount,
   selectedMenuHasSubItems,
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
-  logoutUserAction,
 }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
+  const [showSwitchAccount, setShowSwitchAccount] = useState(false);
   const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
-  const { disconnect } = useDisconnect();
 
-  const handleLogout = () => {
-    logoutUserAction(history);
-    window.location.reload();
-  };
+  const { disconnect } = useDisconnect();
 
   const menuButtonClick = (e, _clickCount, _conClassnames) => {
     e.preventDefault();
@@ -68,7 +59,6 @@ const TopNav = ({
     clickOnMobileMenuAction(_containerClassnames);
   };
 
-  const { messages } = intl;
   return (
     <nav className="navbar fixed-top">
       <div className="d-flex align-items-center navbar-left">
@@ -112,7 +102,15 @@ const TopNav = ({
             <DropdownMenu className="mt-3" right>
               {isConnected ? (
                 <>
-                  <DropdownItem>Switch Account</DropdownItem>
+                  <DropdownItem onClick={() => setShowSwitchAccount(true)}>
+                    Switch Account
+                  </DropdownItem>
+                  <SwitchAccountModal
+                    showModal={showSwitchAccount}
+                    handleClose={() => {
+                      setShowSwitchAccount(false);
+                    }}
+                  />
 
                   <DropdownItem divider />
                   <DropdownItem onClick={() => disconnect()}>

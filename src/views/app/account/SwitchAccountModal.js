@@ -9,12 +9,9 @@ import {
   FormGroup,
 } from 'reactstrap';
 import { Formik, Form, Field } from 'formik';
-import { connect } from 'react-redux';
-import { refreshUserInfo, updateProfile } from 'redux/actions';
 import { NotificationManager } from 'components/common/react-notifications';
 
-const GetStartedModal = ({
-  history,
+const SwitchAccountModal = ({
   showModal,
   handleClose,
   loading
@@ -37,9 +34,7 @@ const GetStartedModal = ({
   });
 
   const login = (values) => {
-    submitted.current = true;
-    if (loading) return;
-    updateProfileAction(values, history);
+    console.log(values)
   };
   const initialValues = {
     accountID: 1,
@@ -77,7 +72,7 @@ const GetStartedModal = ({
                   <span className="bounce2" />
                   <span className="bounce3" />
                 </span>
-                <span className="label">Register</span>
+                <span className="label">Login</span>
               </Button>{' '}
               <Button color="secondary" onClick={handleClose}>
                 Cancel
@@ -90,15 +85,4 @@ const GetStartedModal = ({
   );
 };
 
-const mapStateToProps = ({ appData }) => {
-  const { loading, updateProfileSuccessMessage } = appData;
-  return {
-    loading,
-    updateProfileSuccessMessage,
-  };
-};
-
-export default connect(mapStateToProps, {
-  updateProfileAction: updateProfile,
-  updateUserInfoAction: refreshUserInfo,
-})(GetStartedModal);
+export default SwitchAccountModal
