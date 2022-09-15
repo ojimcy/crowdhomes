@@ -41,6 +41,7 @@ module.exports = {
   'menu.wallet': 'Wallet',
   'menu.wallet.deposits': 'Deposits',
   'menu.wallet.withdrawals': 'Withdrawals',
+  'menu.wallet.changewallet': 'Change Wallet',
   'menu.gogo': 'Gogo',
   'menu.start': 'Start',
   'menu.second-menu': 'Second Menu',

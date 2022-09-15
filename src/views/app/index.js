@@ -14,6 +14,9 @@ const Dashboard = React.lazy(() =>
 const Referrals = React.lazy(() =>
   import(/* webpackChunkName: "viwes-dashboard" */ './account/Referrals')
 );
+const Matrix = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-dashboard" */ './account/Matrix')
+);
 
 const App = ({ match }) => {
   return (
@@ -39,8 +42,8 @@ const App = ({ match }) => {
               render={(props) => <Referrals {...props} />}
             />
             <Route
-              path={`${match.url}/matix`}
-              render={(props) => <Profile {...props} />}
+              path={`${match.url}/account/matix`}
+              render={(props) => <Matrix {...props} />}
             />
             {/* <ProtectedRoute
                     path={`${match.url}/second-menu`}

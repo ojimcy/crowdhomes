@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import { Colxx, Separator } from 'components/common/CustomBootstrap';
-import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
-import { Card, CardBody, CardHeader, Label, Row } from 'reactstrap';
-import Breadcrumb from 'containers/navs/Breadcrumb';
-// import './profile.css';
+import React, { useState } from "react";
+import { Colxx, Separator } from "components/common/CustomBootstrap";
+import { Card, CardBody, CardHeader, Table, Row } from "reactstrap";
+import Breadcrumb from "containers/navs/Breadcrumb";
+import "./profile.css";
 
-const Referrals = ({ currentUser, match }) => {
-  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
-
+const Referrals = () => {
   return (
     <>
       <Row>
@@ -18,52 +14,33 @@ const Referrals = ({ currentUser, match }) => {
         </Colxx>
       </Row>
 
-      <Row>
-        <Colxx xxs="12">
-          <Card>
-            <div className="position-absolute card-top-buttons">
-              <button
-                onClick={() => setShowEditProfileModal(true)}
-                type="button"
-                className="btn btn-outline-primary"
-              >
-                Edit Profile
-              </button>
-            </div>
-            <CardHeader>
-              <p className="h2 mt-3">Account Details</p>
-            </CardHeader>
-            <CardBody>
-              <Row>
-                <Colxx xxs="12">
-                  <Label>Name</Label>
-                  <p className="info-text">
-                    {currentUser.last_name} {currentUser.first_name}
-                  </p>
-                </Colxx>
-                <Colxx xxs="12">
-                  <Label>Email</Label>
-                  <p className="info-text">{currentUser.email}</p>
-                </Colxx>
-                <Colxx xxs="12">
-                  <Label>Phone Number</Label>
-                  <p className="info-text">{currentUser.phone_number}</p>
-                </Colxx>
-              </Row>
-            </CardBody>
-          </Card>
-        </Colxx>
-      </Row>
+      <Card>
+        <CardHeader>
+          <p className="h2 mt-3">Referrals</p>
+        </CardHeader>
+        <CardBody>
+          <Row>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Level</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                </tr>
+              </tbody>
+            </Table>
+          </Row>
+        </CardBody>
+      </Card>
     </>
   );
 };
 
-const mapStateToProps = ({ authUser }) => {
-  const { currentUser } = authUser;
-
-  return {
-    currentUser,
-  };
-};
-
-export default injectIntl(connect(mapStateToProps, {})(Referrals));
+export default Referrals;
