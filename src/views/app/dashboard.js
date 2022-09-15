@@ -33,7 +33,7 @@ const Dashboard = ({ match, currentUser }) => {
             The real-world side of the Deficonnect project providing unlimited
             experience in the physical and the digital world with <br /> touch
             in Real Estate, Automobile, Health-care, Transportation, Health
-            insurance and AgroFi
+            insurance and AgroFi.
           </p>
         </Colxx>
 

@@ -15,19 +15,19 @@ const data = [
     // roles: [UserRole.Admin, UserRole.Editor],
     subs: [
       {
-        icon: 'simple-icon-paper-plane',
-        label: 'menu.account.profile',
-        to: `${adminRoot}/account`,
-      },
-      {
-        icon: 'simple-icon-paper-plane',
-        label: 'menu.account.referrals',
-        to: `${adminRoot}/account/referrals`,
+        icon: 'simple-icon-notebook',
+        label: 'menu.account.how-it-works',
+        to: `${adminRoot}/account/how-it-works`,
       },
       {
         icon: 'simple-icon-paper-plane',
         label: 'menu.account.matrix',
         to: `${adminRoot}/account/matrix`,
+      },
+      {
+        icon: 'simple-icon-paper-plane',
+        label: 'menu.account.referrals',
+        to: `${adminRoot}/account/referrals`,
       },
     ],
   },
