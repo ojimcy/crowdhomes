@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import {
@@ -21,6 +21,7 @@ import {
   getRecentEarnings,
 } from "redux/app/actions";
 import { formatAmount } from "helpers/math";
+import GetStartedModal from "./account/GetStartedModal";
 
 const Dashboard = ({
   match,
@@ -33,6 +34,7 @@ const Dashboard = ({
   recentEarnings,
   getRecentEarningsAction,
 }) => {
+  const [showGetStartedModal, setShowGetStartedModal] = useState(false);
   useEffect(() => {
     getActiveSubscriptionAction();
     getMyReferralCountAction();
@@ -53,7 +55,7 @@ const Dashboard = ({
       </Row>
       <Row>
         <Colxx md="12">
-          <h6 className="top-callout">Deficonnect RealFi</h6>
+          <h6 className="top-callout">Welcome to Deficonnect RealFi</h6>
           <p className="top-callout-text">
             The real-world side of the Deficonnect project providing unlimited
             experience in the physical and the digital world with <br /> touch
@@ -133,7 +135,17 @@ const Dashboard = ({
                 RealFi.
               </p>
               <p>
-                <Button>Get Started Now</Button>
+                <GetStartedModal
+                  showModal={showGetStartedModal}
+                  handleClose={() => setShowGetStartedModal(false)}
+                />
+                <Button
+                  onClick={() => {
+                    setShowGetStartedModal(true);
+                  }}
+                >
+                  Get Started Now
+                </Button>
               </p>
             </CardBody>
           </Card>
