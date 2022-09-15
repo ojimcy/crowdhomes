@@ -12,7 +12,6 @@ const data = [
     icon: 'simple-icon-user',
     label: 'menu.army',
     to: '#',
-    // roles: [UserRole.Admin, UserRole.Editor],
     subs: [
       {
         icon: 'simple-icon-notebook',
