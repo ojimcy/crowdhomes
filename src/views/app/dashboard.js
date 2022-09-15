@@ -165,7 +165,6 @@ const Dashboard = ({ match, currentUser }) => {
                       Private Heaven
                     </h5>
                     <p className="text-large mb-2 text-default">
-                      Handled With:
                       <a target="_blank" href="https://chegbehomes.com">
                         Chegbe Homes Limited
                       </a>
@@ -232,7 +231,7 @@ const Dashboard = ({ match, currentUser }) => {
                       Rice Farm
                     </h5>
                     <p className="text-large mb-2 text-default">
-                      Handled With:
+                      
                       <a target="_blank" href="https://deficonnect.tech/agrofi">
                         Deficonnect AgroFi
                       </a>
