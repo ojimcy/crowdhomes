@@ -7,43 +7,16 @@ import {
   Card,
   CardBody,
   CardImg,
-  CardSubtitle,
-  CardText,
   CardTitle,
   Row,
 } from "reactstrap";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
-import SubscriptionBox from "containers/dashboards/subscription-box/SubscriptionBox";
-import {
-  getActiveSubscription,
-  getMyReferralCount,
-  getRecentEarnings,
-} from "redux/app/actions";
 import { formatAmount } from "helpers/math";
 import GetStartedModal from "./account/GetStartedModal";
 
-const Dashboard = ({
-  match,
-  currentUser,
-  noActiveSubscription,
-  activeSubscription,
-  getActiveSubscriptionAction,
-  myReferralCount,
-  getMyReferralCountAction,
-  recentEarnings,
-  getRecentEarningsAction,
-}) => {
+const Dashboard = ({ match, currentUser }) => {
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
-  useEffect(() => {
-    getActiveSubscriptionAction();
-    getMyReferralCountAction();
-    getRecentEarningsAction();
-  }, [
-    getActiveSubscriptionAction,
-    getMyReferralCountAction,
-    getRecentEarningsAction,
-  ]);
 
   return (
     <>
@@ -301,26 +274,7 @@ const Dashboard = ({
   );
 };
 
-const mapStateToProps = ({ appData, authUser }) => {
-  const {
-    activeSubscription,
-    noActiveSubscription,
-    myReferralCount,
-    recentEarnings,
-  } = appData;
-  const { currentUser } = authUser;
-  return {
-    activeSubscription,
-    noActiveSubscription,
-    currentUser,
-    myReferralCount,
-    recentEarnings,
-  };
+const mapStateToProps = () => {
+  return {};
 };
-export default injectIntl(
-  connect(mapStateToProps, {
-    getActiveSubscriptionAction: getActiveSubscription,
-    getMyReferralCountAction: getMyReferralCount,
-    getRecentEarningsAction: getRecentEarnings,
-  })(Dashboard)
-);
+export default injectIntl(connect(mapStateToProps, {})(Dashboard));
