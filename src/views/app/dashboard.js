@@ -74,7 +74,7 @@ const Dashboard = ({ match, currentUser }) => {
                       My Contribution
                     </p>
                     <p className="lead text-center">
-                      ${formatAmount(currentUser.principal)}
+                      $0.0000
                     </p>
                   </CardBody>
                 </Card>
@@ -89,7 +89,7 @@ const Dashboard = ({ match, currentUser }) => {
                       My Total Earnings
                     </p>
                     <p className="lead text-center">
-                      ${formatAmount(currentUser.principal)}
+                      $0.0000
                     </p>
                   </CardBody>
                 </Card>
