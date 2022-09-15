@@ -37,12 +37,12 @@ module.exports = {
   'menu.dashboards': 'Dashboards',
   'menu.realfi': 'RealFi',
   'menu.dashboard': 'Dashboard',
-  'menu.account': 'DFC Army',
-  'menu.account.how-it-works': 'How it Works',
-  'menu.wallet': 'Wallet',
-  'menu.wallet.deposits': 'Deposits',
-  'menu.wallet.withdrawals': 'Withdrawals',
-  'menu.wallet.changewallet': 'Change Wallet',
+  'menu.army': 'DFC Army',
+  'menu.army.how-it-works': 'How it Works',
+  'menu.army.referrals': 'Referrals',
+  'menu.army.matrix': 'Matrix',
+  'menu.staking': 'DFC Staking',
+  
   'menu.gogo': 'Gogo',
   'menu.start': 'Start',
   'menu.second-menu': 'Second Menu',
@@ -55,8 +55,6 @@ module.exports = {
   'menu.search': 'Search',
   'menu.docs': 'Docs',
   'menu.blank-page': 'Blank Page',
-  'menu.account.referrals': 'Referrals',
-  'menu.account.matrix': 'Matrix',
 
   /* 04.Error Page */
   'pages.error-title': 'Ooops... looks like an error occurred!',

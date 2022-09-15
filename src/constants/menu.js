@@ -3,57 +3,39 @@ import { adminRoot } from './defaultValues';
 const data = [
   {
     id: 'dashboard',
-    icon: 'iconsminds-air-balloon-1',
+    icon: 'simple-icon-home',
     label: 'menu.dashboard',
     to: `${adminRoot}/realfi`,
   },
   {
-    id: 'account',
+    id: 'army',
     icon: 'simple-icon-user',
-    label: 'menu.account',
+    label: 'menu.army',
     to: '#',
     // roles: [UserRole.Admin, UserRole.Editor],
     subs: [
       {
         icon: 'simple-icon-notebook',
-        label: 'menu.account.how-it-works',
-        to: `${adminRoot}/account/how-it-works`,
+        label: 'menu.army.how-it-works',
+        to: `${adminRoot}/army/how-it-works`,
       },
       {
         icon: 'simple-icon-paper-plane',
-        label: 'menu.account.matrix',
-        to: `${adminRoot}/account/matrix`,
+        label: 'menu.army.matrix',
+        to: `${adminRoot}/army/matrix`,
       },
       {
         icon: 'simple-icon-paper-plane',
-        label: 'menu.account.referrals',
-        to: `${adminRoot}/account/referrals`,
+        label: 'menu.army.referrals',
+        to: `${adminRoot}/army/referrals`,
       },
     ],
   },
   {
-    id: 'wallet',
-    icon: 'simple-icon-wallet',
-    label: 'menu.wallet',
-    to: '#',
-    // roles: [UserRole.Admin, UserRole.Editor],
-    subs: [
-      {
-        icon: 'simple-icon-paper-plane',
-        label: 'menu.wallet',
-        to: `${adminRoot}/wallet`,
-      },
-      {
-        icon: 'simple-icon-paper-plane',
-        label: 'menu.wallet.withdrawals',
-        to: `${adminRoot}/wallet/withdrawals`,
-      },
-      {
-        icon: 'simple-icon-paper-plane',
-        label: 'menu.wallet.changewallet',
-        to: `${adminRoot}/wallet/changewallet`,
-      },
-    ],
+    id: 'staking',
+    icon: 'simple-icon-briefcase',
+    label: 'menu.staking',
+    to: `${adminRoot}/staking`,
   },
 ];
 export default data;
