@@ -41,12 +41,12 @@ export const currentUser = {
 };
 
 export const themeColorStorageKey = '__theme_selected_color';
-export const isMultiColorActive = true;
+export const isMultiColorActive = false;
 export const defaultColor = 'dark.greenlime';
-export const isDarkSwitchActive = true;
+export const isDarkSwitchActive = false;
 export const defaultDirection = 'ltr';
 export const themeRadiusStorageKey = '__theme_radius';
-export const isAuthGuardActive = true;
+export const isAuthGuardActive = false;
 export const colors = [
   'bluenavy',
   'blueyale',
