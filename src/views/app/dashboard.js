@@ -12,11 +12,14 @@ import {
 } from "reactstrap";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
-import { formatAmount } from "helpers/math";
 import GetStartedModal from "./account/GetStartedModal";
+import ConnectWalletModal from "./account/ConnectWalletModal";
+import { useAccount } from "wagmi";
 
 const Dashboard = ({ match, currentUser }) => {
+  const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
+  const { isConnected } = useAccount();
 
   return (
     <>
@@ -73,9 +76,7 @@ const Dashboard = ({ match, currentUser }) => {
                     <p className="card-text font-weight-semibold mb-0">
                       My Contribution
                     </p>
-                    <p className="lead text-center">
-                      $0.0000
-                    </p>
+                    <p className="lead text-center">$0.0000</p>
                   </CardBody>
                 </Card>
               </div>
@@ -88,9 +89,7 @@ const Dashboard = ({ match, currentUser }) => {
                     <p className="card-text font-weight-semibold mb-0">
                       My Total Earnings
                     </p>
-                    <p className="lead text-center">
-                      $0.0000
-                    </p>
+                    <p className="lead text-center">$0.0000</p>
                   </CardBody>
                 </Card>
               </div>
@@ -112,13 +111,28 @@ const Dashboard = ({ match, currentUser }) => {
                   showModal={showGetStartedModal}
                   handleClose={() => setShowGetStartedModal(false)}
                 />
-                <Button
-                  onClick={() => {
-                    setShowGetStartedModal(true);
-                  }}
-                >
-                  Get Started Now
-                </Button>
+
+                {isConnected ? (
+                  <Button
+                    onClick={() => {
+                      setShowGetStartedModal(true);
+                    }}
+                  >
+                    Get Started Now
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => {
+                        setShowConnectWalletModal(true);
+                      }}
+                    >Connect Wallet To Get Started</Button>
+                    <ConnectWalletModal
+                      showModal={showConnectWalletModal}
+                      handleClose={() => setShowConnectWalletModal(false)}
+                    />
+                  </>
+                )}
               </p>
             </CardBody>
           </Card>
@@ -231,7 +245,6 @@ const Dashboard = ({ match, currentUser }) => {
                       Rice Farm
                     </h5>
                     <p className="text-large mb-2 text-default">
-                      
                       <a target="_blank" href="https://deficonnect.tech/agrofi">
                         Deficonnect AgroFi
                       </a>

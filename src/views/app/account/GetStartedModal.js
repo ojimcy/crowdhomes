@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   ModalHeader,
@@ -7,43 +7,65 @@ import {
   Button,
   Label,
   FormGroup,
-} from 'reactstrap';
-import { Formik, Form, Field } from 'formik';
-import { connect } from 'react-redux';
-import { refreshUserInfo, updateProfile } from 'redux/actions';
-import { NotificationManager } from 'components/common/react-notifications';
+} from "reactstrap";
+import { Formik, Form, Field } from "formik";
+import { connect } from "react-redux";
+import { refreshUserInfo, updateProfile } from "redux/actions";
+import { NotificationManager } from "components/common/react-notifications";
 
-const GetStartedModal = ({
-  history,
-  showModal,
-  handleClose,
-  loading
-}) => {
+import {
+  useAccount,
+  useContractWrite,
+  useProvider,
+  useWaitForTransaction,
+} from "wagmi";
+import useBlockchain from "blockchain/useBlockchain";
+import { premium } from "blockchain/contracts";
+import premiumContractAbi from "blockchain/abi/premium";
+
+const GetStartedModal = ({ showModal, handleClose }) => {
   const submitted = useRef(false);
+  const { address } = useAccount();
+  const { premiumContract } = useBlockchain();
+  const [args, setArgs] = useState([])
+
+  const { data, write } = useContractWrite({
+    addressOrName: premium,
+    contractInterface: premiumContractAbi,
+    functionName: "register",
+    args
+  });
+
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  });
 
   useEffect(() => {
-    if (!submitted.current) return;
+    window.premiumContract = premiumContract;
+  });
+
+  const register = async (values) => {
+    submitted.current = true;
+    setArgs([values.referralID, values.uplineID, values.withdrawalAddress])
+    const tx = write();
+
+    //const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
+    //console.log(receipt);
+
     NotificationManager.warning(
       updateProfileSuccessMessage,
-      'Notice',
+      "Notice",
       3000,
       null,
       null,
-      ''
+      ""
     );
-
-    handleClose();
-    submitted.current = false;
-  });
-
-  const register = (values) => {
-    submitted.current = true;
-    if (loading) return;
-    updateProfileAction(values, history);
   };
+
   const initialValues = {
-    referral_id: 1,
-    withdrawal_address: 'currentUser.withdrawal_address',
+    referralID: 1,
+    uplineID: 1,
+    withdrawalAddress: address,
   };
   return (
     <Modal isOpen={showModal} toggle={handleClose}>
@@ -55,20 +77,34 @@ const GetStartedModal = ({
             <ModalBody>
               <FormGroup className="form-group has-float-label">
                 <Label>Wallet Address</Label>
-                <Field className="form-control" name="withdrawal_address" required />
-                {errors.withdrawal_address && touched.withdrawal_address && (
+                <Field
+                  className="form-control"
+                  name="withdrawalAddress"
+                  required
+                />
+                {errors.withdrawalAddress && touched.withdrawalAddress && (
                   <div className="invalid-feedback d-block">
-                    {errors.withdrawal_address}
+                    {errors.withdrawalAddress}
                   </div>
                 )}
               </FormGroup>
 
               <FormGroup className="form-group has-float-label">
                 <Label>Referral ID</Label>
-                <Field className="form-control" name="referral_id" required />
-                {errors.referral_id && touched.referral_id && (
+                <Field className="form-control" name="referralID" required />
+                {errors.referralID && touched.referralID && (
                   <div className="invalid-feedback d-block">
-                    {errors.referral_id}
+                    {errors.referralID}
+                  </div>
+                )}
+              </FormGroup>
+
+              <FormGroup className="form-group has-float-label">
+                <Label>Upline ID</Label>
+                <Field className="form-control" name="uplineID" required />
+                {errors.uplineID && touched.uplineID && (
+                  <div className="invalid-feedback d-block">
+                    {errors.uplineID}
                   </div>
                 )}
               </FormGroup>
@@ -79,7 +115,7 @@ const GetStartedModal = ({
                 type="submit"
                 color="primary"
                 className={`btn-shadow btn-multiple-state ${
-                  loading ? 'show-spinner' : ''
+                  isLoading ? "show-spinner" : ""
                 }`}
                 size="lg"
               >
@@ -89,7 +125,7 @@ const GetStartedModal = ({
                   <span className="bounce3" />
                 </span>
                 <span className="label">Register</span>
-              </Button>{' '}
+              </Button>{" "}
               <Button color="secondary" onClick={handleClose}>
                 Cancel
               </Button>
