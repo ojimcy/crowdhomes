@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="container-fluid">
           <Row>
             <Colxx xxs="12" sm="6">
-              <p className="mb-0 text-muted"><em>Metatradas</em> 2022</p>
+              <p className="mb-0 text-muted"><em>Deficonnect</em> 2022</p>
             </Colxx>
             <Colxx className="col-sm-6 d-none d-sm-block">
               <ul className="breadcrumb pt-0 pr-0 float-right">
@@ -20,8 +20,8 @@ const Footer = () => {
                   </NavLink>
                 </li>
                 <li className="breadcrumb-item mb-0">
-                  <NavLink className="btn-link" to="/wallet/deposit" location={{}}>
-                    Deposit
+                  <NavLink className="btn-link" to="/account" location={{}}>
+                    Account
                   </NavLink>
                 </li>
                 <li className="breadcrumb-item mb-0">
