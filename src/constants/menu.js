@@ -5,7 +5,7 @@ const data = [
     id: 'dashboard',
     icon: 'iconsminds-air-balloon-1',
     label: 'menu.dashboard',
-    to: `${adminRoot}/dashboard`,
+    to: `${adminRoot}/realfi`,
   },
   {
     id: 'account',

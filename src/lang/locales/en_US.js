@@ -35,6 +35,7 @@ module.exports = {
   'menu.home': 'Home',
   'menu.app': 'Home',
   'menu.dashboards': 'Dashboards',
+  'menu.realfi': 'RealFi',
   'menu.dashboard': 'Dashboard',
   'menu.account': 'Account',
   'menu.account.profile': 'Profile',

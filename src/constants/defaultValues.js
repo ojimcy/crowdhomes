@@ -42,7 +42,7 @@ export const currentUser = {
 
 export const themeColorStorageKey = '__theme_selected_color';
 export const isMultiColorActive = false;
-export const defaultColor = 'dark.greenlime';
+export const defaultColor = 'dark.yellowgranola';
 export const isDarkSwitchActive = false;
 export const defaultDirection = 'ltr';
 export const themeRadiusStorageKey = '__theme_radius';

@@ -27,10 +27,10 @@ const App = ({ match }) => {
             <Redirect
               exact
               from={`${match.url}/`}
-              to={`${match.url}/dashboard`}
+              to={`${match.url}/realfi`}
             />
             <Route
-              path={`${match.url}/dashboard`}
+              path={`${match.url}/realfi`}
               render={(props) => <Dashboard {...props} />}
             />
             <Route

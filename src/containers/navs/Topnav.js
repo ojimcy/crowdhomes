@@ -144,11 +144,10 @@ const TopNav = ({
         >
           <MobileMenuIcon />
         </NavLink>
-
       </div>
       <NavLink className="navbar-logo" to={adminRoot}>
               <span>
-                <img alt="logo" src="/assets/img/profiles/l-12.png" />
+                <img alt="Deficonnect" src="/assets/logos/deficonnect.png" className='logo-img' />
               </span>
       </NavLink>
 
@@ -158,9 +157,6 @@ const TopNav = ({
             <DropdownToggle className="p-0" color="empty">
               <span className="name mr-1">
                 Connect Wallet
-              </span>
-              <span>
-                <img alt="Profile" src="/assets/img/profiles/l-11.jpg" />
               </span>
             </DropdownToggle>
             <DropdownMenu className="mt-3" right>
