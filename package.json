@@ -1,7 +1,7 @@
 {
-  "name": "Chegbehomes",
+  "name": "RealFi",
   "version": "1.0.0",
-  "description": "Chegbe Homes: Real estate, Technology, and Comfort",
+  "description": "The real world side of deficonnect",
   "private": true,
   "dependencies": {
     "@aws-amplify/ui-react": "^1.2.10",
