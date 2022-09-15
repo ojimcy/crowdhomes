@@ -6,13 +6,11 @@ import {
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
-  Input,
 } from 'reactstrap';
 
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import IntlMessages from 'helpers/IntlMessages';
 import {
   setContainerClassnames,
   clickOnMobileMenu,
@@ -21,19 +19,12 @@ import {
 } from 'redux/actions';
 
 import {
-  menuHiddenBreakpoint,
   searchPath,
-  localeOptions,
-  isDarkSwitchActive,
-  buyUrl,
   adminRoot,
 } from 'constants/defaultValues';
 
 import { MobileMenuIcon, MenuIcon } from 'components/svg';
 import { getDirection, setDirection } from 'helpers/Utils';
-import TopnavEasyAccess from './Topnav.EasyAccess';
-import TopnavNotifications from './Topnav.Notifications';
-import TopnavDarkSwitch from './Topnav.DarkSwitch';
 
 const TopNav = ({
   intl,
@@ -156,46 +147,24 @@ const TopNav = ({
 
       </div>
       <NavLink className="navbar-logo" to={adminRoot}>
-        {/* <span className="logo d-none d-xs-block" /> */}
-        {/* <span className="logo-mobile d-block d-xs-none" /> */}
               <span>
                 <img alt="logo" src="/assets/img/profiles/l-12.png" />
               </span>
       </NavLink>
 
       <div className="navbar-right">
-        {isDarkSwitchActive && <TopnavDarkSwitch />}
-        <div className="header-icons d-inline-block align-middle">
-          <TopnavEasyAccess />
-          <TopnavNotifications />
-          <button
-            className="header-icon btn btn-empty d-none d-sm-inline-block"
-            type="button"
-            id="fullScreenButton"
-            onClick={toggleFullScreen}
-          >
-            {isInFullScreen ? (
-              <i className="simple-icon-size-actual d-block" />
-            ) : (
-              <i className="simple-icon-size-fullscreen d-block" />
-            )}
-          </button>
-        </div>
         <div className="user d-inline-block">
           <UncontrolledDropdown className="dropdown-menu-right">
             <DropdownToggle className="p-0" color="empty">
               <span className="name mr-1">
-                {currentUser.last_name} {currentUser.first_name}
+                Connect Wallet
               </span>
               <span>
                 <img alt="Profile" src="/assets/img/profiles/l-11.jpg" />
               </span>
             </DropdownToggle>
             <DropdownMenu className="mt-3" right>
-              <DropdownItem>Account</DropdownItem>
-              <DropdownItem>Features</DropdownItem>
-              <DropdownItem>History</DropdownItem>
-              <DropdownItem>Support</DropdownItem>
+              <DropdownItem>ConnectedWallet</DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={() => handleLogout()}>
                 Sign out

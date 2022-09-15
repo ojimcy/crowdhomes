@@ -45,13 +45,13 @@ const data = [
       },
       {
         icon: 'simple-icon-paper-plane',
-        label: 'menu.wallet.deposits',
-        to: `${adminRoot}/wallet/deposits`,
+        label: 'menu.wallet.withdrawals',
+        to: `${adminRoot}/wallet/withdrawals`,
       },
       {
         icon: 'simple-icon-paper-plane',
-        label: 'menu.wallet.withdrawals',
-        to: `${adminRoot}/wallet/withdrawals`,
+        label: 'menu.wallet.changewallet',
+        to: `${adminRoot}/wallet/changewallet`,
       },
     ],
   },
