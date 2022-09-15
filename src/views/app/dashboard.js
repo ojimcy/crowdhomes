@@ -64,7 +64,7 @@ const Dashboard = ({
 
         <Colxx className="icon-cards-row" md="12">
           <Row>
-            <Colxx md="4" xxs="12">
+            <Colxx md="3" xxs="12">
               <div className="icon-row-item mb-4">
                 <Card>
                   <CardBody className="text-center">
@@ -77,7 +77,7 @@ const Dashboard = ({
                 </Card>
               </div>
             </Colxx>
-            <Colxx md="4" xxs="12">
+            <Colxx md="3" xxs="12">
               <div className="icon-row-item mb-4">
                 <Card>
                   <CardBody className="text-center">
@@ -90,13 +90,28 @@ const Dashboard = ({
                 </Card>
               </div>
             </Colxx>
-            <Colxx md="4" xxs="12">
+            <Colxx md="3" xxs="12">
               <div className="icon-row-item mb-4">
                 <Card>
                   <CardBody className="text-center">
                     <i className="iconsminds-dollar" />
                     <p className="card-text font-weight-semibold mb-0">
-                      Your Contribution
+                      My Contribution
+                    </p>
+                    <p className="lead text-center">
+                      ${formatAmount(currentUser.principal)}
+                    </p>
+                  </CardBody>
+                </Card>
+              </div>
+            </Colxx>
+            <Colxx md="3" xxs="12">
+              <div className="icon-row-item mb-4">
+                <Card>
+                  <CardBody className="text-center">
+                    <i className="iconsminds-dollar" />
+                    <p className="card-text font-weight-semibold mb-0">
+                      My Total Earnings
                     </p>
                     <p className="lead text-center">
                       ${formatAmount(currentUser.principal)}
