@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import { injectIntl } from 'react-intl';
+import React, { useState } from "react";
+import { injectIntl } from "react-intl";
 
 import {
   UncontrolledDropdown,
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
-} from 'reactstrap';
+} from "reactstrap";
 
-import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
 
 import {
   setContainerClassnames,
   clickOnMobileMenu,
   logoutUser,
   changeLocale,
-} from 'redux/actions';
+} from "redux/actions";
 
-import {
-  searchPath,
-  adminRoot,
-} from 'constants/defaultValues';
+import { adminRoot } from "constants/defaultValues";
 
-import { MobileMenuIcon, MenuIcon } from 'components/svg';
-import { getDirection, setDirection } from 'helpers/Utils';
+import { MobileMenuIcon, MenuIcon } from "components/svg";
+
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import ConnectWalletModal from "views/app/account/ConnectWalletModal";
 
 const TopNav = ({
   intl,
@@ -32,70 +32,16 @@ const TopNav = ({
   containerClassnames,
   menuClickCount,
   selectedMenuHasSubItems,
-  locale,
-  currentUser,
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
   logoutUserAction,
-  changeLocaleAction,
 }) => {
-  const [isInFullScreen, setIsInFullScreen] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
-
-  const search = () => {
-    history.push(`${searchPath}?key=${searchKeyword}`);
-    setSearchKeyword('');
-  };
-
-  const handleChangeLocale = (_locale, direction) => {
-    changeLocaleAction(_locale);
-
-    const currentDirection = getDirection().direction;
-    if (direction !== currentDirection) {
-      setDirection(direction);
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    }
-  };
-
-  const isInFullScreenFn = () => {
-    return (
-      (document.fullscreenElement && document.fullscreenElement !== null) ||
-      (document.webkitFullscreenElement &&
-        document.webkitFullscreenElement !== null) ||
-      (document.mozFullScreenElement &&
-        document.mozFullScreenElement !== null) ||
-      (document.msFullscreenElement && document.msFullscreenElement !== null)
-    );
-  };
-
-
-  const toggleFullScreen = () => {
-    const isFS = isInFullScreenFn();
-
-    const docElm = document.documentElement;
-    if (!isFS) {
-      if (docElm.requestFullscreen) {
-        docElm.requestFullscreen();
-      } else if (docElm.mozRequestFullScreen) {
-        docElm.mozRequestFullScreen();
-      } else if (docElm.webkitRequestFullScreen) {
-        docElm.webkitRequestFullScreen();
-      } else if (docElm.msRequestFullscreen) {
-        docElm.msRequestFullscreen();
-      }
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
-    setIsInFullScreen(!isFS);
-  };
+  const [showConnectWalletModal, setShowConnectWalletModal] = useState();
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
+  const { disconnect } = useDisconnect();
 
   const handleLogout = () => {
     logoutUserAction(history);
@@ -106,8 +52,8 @@ const TopNav = ({
     e.preventDefault();
 
     setTimeout(() => {
-      const event = document.createEvent('HTMLEvents');
-      event.initEvent('resize', false, false);
+      const event = document.createEvent("HTMLEvents");
+      event.initEvent("resize", false, false);
       window.dispatchEvent(event);
     }, 350);
     setContainerClassnamesAction(
@@ -146,9 +92,13 @@ const TopNav = ({
         </NavLink>
       </div>
       <NavLink className="navbar-logo" to={adminRoot}>
-              <span>
-                <img alt="Deficonnect" src="/assets/logos/deficonnect.png" className='logo-img' />
-              </span>
+        <span>
+          <img
+            alt="Deficonnect"
+            src="/assets/logos/deficonnect.png"
+            className="logo-img"
+          />
+        </span>
       </NavLink>
 
       <div className="navbar-right">
@@ -156,15 +106,34 @@ const TopNav = ({
           <UncontrolledDropdown className="dropdown-menu-right">
             <DropdownToggle className="p-0" color="empty">
               <span className="name mr-1">
-                Connect Wallet
+                {isConnected ? <>{address}</> : "Connect Wallet"}
               </span>
             </DropdownToggle>
             <DropdownMenu className="mt-3" right>
-              <DropdownItem>ConnectedWallet</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem onClick={() => handleLogout()}>
-                Sign out
-              </DropdownItem>
+              {isConnected ? (
+                <>
+                  <DropdownItem>Switch Account</DropdownItem>
+
+                  <DropdownItem divider />
+                  <DropdownItem onClick={() => disconnect()}>
+                    Disconnect
+                  </DropdownItem>
+                </>
+              ) : (
+                <>
+                  <ConnectWalletModal
+                    showModal={showConnectWalletModal}
+                    handleClose={() => setShowConnectWalletModal(false)}
+                  />
+                  <DropdownItem
+                    onClick={() => {
+                      setShowConnectWalletModal(true);
+                    }}
+                  >
+                    Connect Wallet
+                  </DropdownItem>
+                </>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
