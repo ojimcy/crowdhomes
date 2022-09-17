@@ -15,11 +15,28 @@ import Breadcrumb from "containers/navs/Breadcrumb";
 import GetStartedModal from "./account/GetStartedModal";
 import ConnectWalletModal from "./account/ConnectWalletModal";
 import { useAccount } from "wagmi";
+import useBlockchain from "blockchain/useBlockchain";
+import { NotificationManager } from "components/common/react-notifications";
 
-const Dashboard = ({ match, currentUser }) => {
+const Dashboard = ({ match, currentAccount,history }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
   const { isConnected } = useAccount();
+  const { premiumContract, systemContract } = useBlockchain();
+
+  useEffect(() => {
+    window.systemContract = systemContract;
+    window.premiumContract = premiumContract;
+  });
+
+  const joinDFCArmy = async () => {
+    const tx = await premiumContract.joinArmy(
+      currentAccount.id,
+      parseInt(Math.random() * 1000000)
+    );
+    console.log(tx.hash);
+    NotificationManager.success("Transaction submitted");
+  };
 
   return (
     <>
@@ -113,20 +130,41 @@ const Dashboard = ({ match, currentUser }) => {
                 />
 
                 {isConnected ? (
-                  <Button
-                    onClick={() => {
-                      setShowGetStartedModal(true);
-                    }}
-                  >
-                    Get Started Now
-                  </Button>
+                  <>
+                    {!currentAccount.registered ? (
+                     <>
+                     <Button
+                        onClick={() => {
+                          setShowGetStartedModal(true);
+                        }}
+                      >
+                        Get Started Now
+                      </Button>
+                     </>
+                    ) : (
+                      <>
+                        {!currentAccount.premiumLevel > 0 ? (
+                          <Button onCanPlay={joinDFCArmy}>Join DFC Army</Button>
+                        ) : (
+                          <>
+                          <span>
+                            Congratulations! You're on your way to better days
+                          </span> <br/>
+                          <Button onClick={()=>{history.push('/army')}}>Go To Army Dashboard</Button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
                 ) : (
                   <>
                     <Button
                       onClick={() => {
                         setShowConnectWalletModal(true);
                       }}
-                    >Connect Wallet To Get Started</Button>
+                    >
+                      Connect Wallet To Get Started
+                    </Button>
                     <ConnectWalletModal
                       showModal={showConnectWalletModal}
                       handleClose={() => setShowConnectWalletModal(false)}
@@ -259,7 +297,7 @@ const Dashboard = ({ match, currentUser }) => {
                         <p className="mb-3">Value per Unit: $72,038</p>
                       </li>
                       <li>
-                        <p>Location: Kano State, Nigeria</p>
+                        <p>Location: Kura, Kano State, Nigeria</p>
                       </li>
                     </ul>
                     <div className="text-center">
@@ -286,7 +324,8 @@ const Dashboard = ({ match, currentUser }) => {
   );
 };
 
-const mapStateToProps = () => {
-  return {};
+const mapStateToProps = ({ authUser }) => {
+  const { currentAccount } = authUser;
+  return { currentAccount };
 };
 export default injectIntl(connect(mapStateToProps, {})(Dashboard));

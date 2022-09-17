@@ -32,6 +32,7 @@ const TopNav = ({
   selectedMenuHasSubItems,
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
+  currentAccount,
 }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showSwitchAccount, setShowSwitchAccount] = useState(false);
@@ -96,7 +97,14 @@ const TopNav = ({
           <UncontrolledDropdown className="dropdown-menu-right">
             <DropdownToggle className="p-0" color="empty">
               <span className="name mr-1">
-                {isConnected ? <>{address}</> : "Connect Wallet"}
+                {isConnected ? (
+                  <>
+                    {address.substring(0, 8)}...{" "}
+                    {currentAccount && currentAccount.registered ? <>Account ID: {currentAccount.id}</> : ""}
+                  </>
+                ) : (
+                  "Connect Wallet"
+                )}
               </span>
             </DropdownToggle>
             <DropdownMenu className="mt-3" right>
@@ -143,13 +151,13 @@ const TopNav = ({
 const mapStateToProps = ({ menu, settings, authUser }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
-  const { currentUser } = authUser;
+  const { currentAccount } = authUser;
   return {
     containerClassnames,
     menuClickCount,
     selectedMenuHasSubItems,
     locale,
-    currentUser,
+    currentAccount,
   };
 };
 export default injectIntl(

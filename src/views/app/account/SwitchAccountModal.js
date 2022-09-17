@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   ModalHeader,
@@ -7,41 +7,94 @@ import {
   Button,
   Label,
   FormGroup,
-} from 'reactstrap';
-import { Formik, Form, Field } from 'formik';
-import { NotificationManager } from 'components/common/react-notifications';
+} from "reactstrap";
+import { Formik, Form, Field } from "formik";
+import { NotificationManager } from "components/common/react-notifications";
+import { injectIntl } from "react-intl";
+import { connect } from "react-redux";
+import { setWeb3CurrentID } from "redux/auth/actions";
+import useBlockchain from "blockchain/useBlockchain";
 
 const SwitchAccountModal = ({
   showModal,
   handleClose,
-  loading
+  setWeb3CurrentIDAction,
+  currentAccount,
 }) => {
   const submitted = useRef(false);
+  const { premiumContract } = useBlockchain();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!submitted.current) return;
     NotificationManager.warning(
       updateProfileSuccessMessage,
-      'Notice',
+      "Notice",
       3000,
       null,
       null,
-      ''
+      ""
     );
 
     handleClose();
     submitted.current = false;
   });
 
-  const login = (values) => {
-    console.log(values)
+  const login = async (values) => {
+    if (values.accountID <= 0) {
+      NotificationManager.warning(
+        "Invalid User ID",
+        "Error",
+        3000,
+        null,
+        null,
+        ""
+      );
+    }
+    setLoading(true);
+    const user = await premiumContract.getUser(values.accountID);
+    if (user.registered) {
+      const walletAddress = await premiumContract.userAddresses(values.accountID);
+
+      const userData = {
+        id: values.accountID,
+        registered: user.registered,
+        premiumLevel: parseInt(user.premiumLevel),
+        referralID: parseInt(user.referralID),
+        uplineID: parseInt(user.uplineID),
+        referralsCount: parseInt(user.referralsCount),
+        walletAddress: walletAddress,
+      };
+
+      setWeb3CurrentIDAction(userData);
+      NotificationManager.warning(
+        "Login succeeded",
+        "Success",
+        3000,
+        null,
+        null,
+        ""
+      );
+      handleClose();
+      return;
+    } else {
+      NotificationManager.warning(
+        "Invalid User ID",
+        "Error",
+        3000,
+        null,
+        null,
+        ""
+      );
+    }
+    setLoading(false);
   };
   const initialValues = {
-    accountID: 1,
+    accountID: currentAccount.id || '',
   };
   return (
     <Modal isOpen={showModal} toggle={handleClose}>
-      <ModalHeader>Get Started</ModalHeader>
+      <ModalHeader>Switch Account</ModalHeader>
 
       <Formik initialValues={initialValues} onSubmit={login}>
         {({ errors, touched }) => (
@@ -63,7 +116,7 @@ const SwitchAccountModal = ({
                 type="submit"
                 color="primary"
                 className={`btn-shadow btn-multiple-state ${
-                  loading ? 'show-spinner' : ''
+                  loading ? "show-spinner" : ""
                 }`}
                 size="lg"
               >
@@ -73,7 +126,7 @@ const SwitchAccountModal = ({
                   <span className="bounce3" />
                 </span>
                 <span className="label">Login</span>
-              </Button>{' '}
+              </Button>{" "}
               <Button color="secondary" onClick={handleClose}>
                 Cancel
               </Button>
@@ -85,4 +138,16 @@ const SwitchAccountModal = ({
   );
 };
 
-export default SwitchAccountModal
+const mapStateToProps = ({ authUser }) => {
+  const { currentAccount } = authUser;
+
+  return {
+    currentAccount,
+  };
+};
+
+export default injectIntl(
+  connect(mapStateToProps, {
+    setWeb3CurrentIDAction: setWeb3CurrentID,
+  })(SwitchAccountModal)
+);

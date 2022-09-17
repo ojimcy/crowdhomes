@@ -203,6 +203,44 @@ const abi = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "getFirstAccountID",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "getLastAccountID",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "userID",
         "type": "uint256"
@@ -368,6 +406,24 @@ const abi = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "userID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "random",
+        "type": "uint256"
+      }
+    ],
+    "name": "joinArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "lastID",
     "outputs": [
@@ -467,24 +523,6 @@ const abi = [
       }
     ],
     "name": "upgradeReplacementAccount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "userID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "random",
-        "type": "uint256"
-      }
-    ],
-    "name": "upgradeToPremium",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

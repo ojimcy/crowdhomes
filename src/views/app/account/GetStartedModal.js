@@ -13,47 +13,80 @@ import { connect } from "react-redux";
 import { refreshUserInfo, updateProfile } from "redux/actions";
 import { NotificationManager } from "components/common/react-notifications";
 
-import {
-  useAccount,
-  useContractWrite,
-  useProvider,
-  useWaitForTransaction,
-} from "wagmi";
+import { useAccount, useProvider, useWaitForTransaction } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
-import { premium } from "blockchain/contracts";
-import premiumContractAbi from "blockchain/abi/premium";
+import { sleep } from "helpers/sleeper";
 
 const GetStartedModal = ({ showModal, handleClose }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [hash, setHash] = useState();
   const submitted = useRef(false);
   const { address } = useAccount();
-  const { premiumContract } = useBlockchain();
-  const [args, setArgs] = useState([])
-
-  const { data, write } = useContractWrite({
-    addressOrName: premium,
-    contractInterface: premiumContractAbi,
-    functionName: "register",
-    args
+  const { premiumContract, systemContract } = useBlockchain();
+  const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
+    confirmations: 1,
+    hash,
   });
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  });
+  const provider = useProvider();
 
   useEffect(() => {
+    window.systemContract = systemContract;
     window.premiumContract = premiumContract;
-  });
+  }, [systemContract, premiumContract]);
+
+  useEffect(() => {
+    if (txSuccess) {
+      setIsLoading(false);
+      NotificationManager.warning(
+        "Account created. Congratulations",
+        "Notice",
+        3000,
+        null,
+        null,
+        ""
+      );
+    }
+  }, [txSuccess]);
+
+  useEffect(() => {
+    if (txError) {
+      setIsLoading(false);
+      NotificationManager.warning(txError, "Notice", 3000, null, null, "");
+    }
+  }, [txError]);
 
   const register = async (values) => {
+    setIsLoading(true);
     submitted.current = true;
-    setArgs([values.referralID, values.uplineID, values.withdrawalAddress])
-    const tx = write();
 
-    //const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
-    //console.log(receipt);
+    const tx = await premiumContract.register(
+      values.referralID,
+      values.uplineID,
+      values.withdrawalAddress
+    );
+
+    console.log(tx.hash)
+    
+    let counter = 0
+    while(true) {
+      let mintedTx = await provider.getTransaction(tx.hash)
+      if(mintedTx) {
+        console.log(mintedTx)
+        setIsLoading(false);
+        break
+      }
+      if( counter > 6) {
+        console.log('cannot resolve the transaction')
+        setIsLoading(false);
+        return
+      }
+      await sleep(1000)
+      counter++
+    }
 
     NotificationManager.warning(
-      updateProfileSuccessMessage,
+      "Create account. Congratulations",
       "Notice",
       3000,
       null,

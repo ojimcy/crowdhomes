@@ -13,11 +13,16 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
   REFRESH_USER_INFO,
+  APP_WEB3_LOGIN_ID,
 } from '../contants';
 
-export const loginUser = (user, history) => ({
+export const setWeb3CurrentID = (id) => ({
+  type: APP_WEB3_LOGIN_ID,
+  payload: id,
+});
+export const loginUser = (id) => ({
   type: LOGIN_USER,
-  payload: { user, history },
+  payload: { id },
 });
 export const loginUserSuccess = (user) => ({
   type: LOGIN_USER_SUCCESS,

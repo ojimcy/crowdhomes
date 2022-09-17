@@ -13,6 +13,7 @@ import {
   RESET_PASSWORD,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
+  APP_WEB3_LOGIN_ID,
 } from '../contants';
 
 const INIT_STATE = {
@@ -22,10 +23,13 @@ const INIT_STATE = {
   resetPasswordCode: '',
   loading: false,
   error: '',
+  currentAccount: {}
 };
 
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
+    case APP_WEB3_LOGIN_ID:
+      return {...state, currentAccount: action.payload}
     case LOGIN_USER:
       return { ...state, loading: true, error: '' };
     case LOGIN_USER_SUCCESS:
