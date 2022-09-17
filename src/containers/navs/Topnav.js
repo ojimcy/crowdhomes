@@ -25,6 +25,7 @@ import { MobileMenuIcon, MenuIcon } from "components/svg";
 import { useAccount, useDisconnect } from "wagmi";
 import ConnectWalletModal from "views/app/account/ConnectWalletModal";
 import SwitchAccountModal from "views/app/account/SwitchAccountModal";
+import GetStartedModal from "views/app/account/GetStartedModal";
 
 const TopNav = ({
   containerClassnames,
@@ -35,6 +36,7 @@ const TopNav = ({
   currentAccount,
 }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
+  const [showGetStartedModal, setShowGetStartedModal] = useState(false);
   const [showSwitchAccount, setShowSwitchAccount] = useState(false);
   const { address, isConnected } = useAccount();
 
@@ -100,7 +102,11 @@ const TopNav = ({
                 {isConnected ? (
                   <>
                     {address.substring(0, 8)}...{" "}
-                    {currentAccount && currentAccount.registered ? <>Account ID: {currentAccount.id}</> : ""}
+                    {currentAccount && currentAccount.registered ? (
+                      <>Account ID: {currentAccount.id}</>
+                    ) : (
+                      ""
+                    )}
                   </>
                 ) : (
                   "Connect Wallet"
@@ -118,6 +124,14 @@ const TopNav = ({
                     handleClose={() => {
                       setShowSwitchAccount(false);
                     }}
+                  />
+
+                  <DropdownItem onClick={() => setShowGetStartedModal(true)}>
+                    Add Account
+                  </DropdownItem>
+                  <GetStartedModal title={'Add Account'}
+                    showModal={showGetStartedModal}
+                    handleClose={() => setShowGetStartedModal(false)}
                   />
 
                   <DropdownItem divider />

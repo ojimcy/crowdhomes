@@ -17,7 +17,7 @@ import { useAccount, useProvider, useWaitForTransaction } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { sleep } from "helpers/sleeper";
 
-const GetStartedModal = ({ showModal, handleClose }) => {
+const GetStartedModal = ({ showModal, handleClose, title, currentAccount }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hash, setHash] = useState();
   const submitted = useRef(false);
@@ -66,23 +66,23 @@ const GetStartedModal = ({ showModal, handleClose }) => {
       values.withdrawalAddress
     );
 
-    console.log(tx.hash)
-    
-    let counter = 0
-    while(true) {
-      let mintedTx = await provider.getTransaction(tx.hash)
-      if(mintedTx) {
-        console.log(mintedTx)
+    console.log(tx.hash);
+
+    let counter = 0;
+    while (true) {
+      let mintedTx = await provider.getTransaction(tx.hash);
+      if (mintedTx) {
+        console.log(mintedTx);
         setIsLoading(false);
-        break
+        break;
       }
-      if( counter > 6) {
-        console.log('cannot resolve the transaction')
+      if (counter > 6) {
+        console.log("cannot resolve the transaction");
         setIsLoading(false);
-        return
+        break;
       }
-      await sleep(1000)
-      counter++
+      await sleep(1000);
+      counter++;
     }
 
     NotificationManager.warning(
@@ -96,13 +96,13 @@ const GetStartedModal = ({ showModal, handleClose }) => {
   };
 
   const initialValues = {
-    referralID: 1,
-    uplineID: 1,
-    withdrawalAddress: address,
+    referralID: currentAccount.id || 1,
+    uplineID: currentAccount.id || 1,
+    withdrawalAddress: currentAccount.walletAddress || address,
   };
   return (
     <Modal isOpen={showModal} toggle={handleClose}>
-      <ModalHeader>Get Started</ModalHeader>
+      <ModalHeader>{title || "Get Started"}</ModalHeader>
 
       <Formik initialValues={initialValues} onSubmit={register}>
         {({ errors, touched }) => (
@@ -170,11 +170,13 @@ const GetStartedModal = ({ showModal, handleClose }) => {
   );
 };
 
-const mapStateToProps = ({ appData }) => {
+const mapStateToProps = ({ appData, authUser }) => {
   const { loading, updateProfileSuccessMessage } = appData;
+  const { currentAccount } = authUser;
   return {
     loading,
     updateProfileSuccessMessage,
+    currentAccount,
   };
 };
 
