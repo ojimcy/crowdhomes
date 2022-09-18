@@ -34,22 +34,21 @@ const App = ({ match }) => {
               render={(props) => <Dashboard {...props} />}
             />
             <Route
-              path={`${match.url}/account`}
+              path={`${match.url}/army`}
               render={(props) => <Profile {...props} />}
             />
             <Route
-              path={`${match.url}/account/referrals`}
+              path={`${match.url}/army/referrals`}
               render={(props) => <Referrals {...props} />}
             />
             <Route
-              path={`${match.url}/account/matix`}
+              path={`${match.url}/army/matrix`}
               render={(props) => <Matrix {...props} />}
             />
-            {/* <ProtectedRoute
-                    path={`${match.url}/second-menu`}
-                    component={SecondMenu}
-                    roles={[UserRole.Admin]}
-            /> */}
+            <Route
+              path={`${match.url}/army/how-it-works`}
+              render={(props) => <Matrix {...props} />}
+            />
             <Redirect to="/error" />
           </Switch>
         </Suspense>

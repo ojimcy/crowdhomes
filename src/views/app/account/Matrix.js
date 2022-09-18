@@ -6,8 +6,7 @@ import { Card, CardBody, CardHeader, Label, Row } from 'reactstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
 // import './profile.css';
 
-const Referrals = ({ currentUser, match }) => {
-  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+const Referrals = ({ currentAccount, match }) => {
 
   return (
     <>
@@ -23,10 +22,10 @@ const Referrals = ({ currentUser, match }) => {
 };
 
 const mapStateToProps = ({ authUser }) => {
-  const { currentUser } = authUser;
+  const { currentAccount } = authUser;
 
   return {
-    currentUser,
+    currentAccount,
   };
 };
 

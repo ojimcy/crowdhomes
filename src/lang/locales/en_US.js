@@ -37,6 +37,7 @@ module.exports = {
   'menu.dashboards': 'Dashboards',
   'menu.realfi': 'RealFi',
   'menu.dashboard': 'Dashboard',
+  'menu.account.profile': 'My Profile',
   'menu.army': 'DFC Army',
   'menu.army.how-it-works': 'How it Works',
   'menu.army.referrals': 'Referrals',

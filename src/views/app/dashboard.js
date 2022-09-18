@@ -17,12 +17,14 @@ import ConnectWalletModal from "./account/ConnectWalletModal";
 import { useAccount } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { NotificationManager } from "components/common/react-notifications";
+import { sleep } from "helpers/sleeper";
 
-const Dashboard = ({ match, currentAccount,history }) => {
+const Dashboard = ({ match, currentAccount, history }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
-  const { isConnected } = useAccount();
-  const { premiumContract, systemContract } = useBlockchain();
+  const [isUpgrading, setIsUpgrading] = useState(false);
+  const { isConnected, address } = useAccount();
+  const { premiumContract, systemContract, erc20Contract } = useBlockchain();
 
   useEffect(() => {
     window.systemContract = systemContract;
@@ -30,12 +32,29 @@ const Dashboard = ({ match, currentAccount,history }) => {
   });
 
   const joinDFCArmy = async () => {
-    const tx = await premiumContract.joinArmy(
-      currentAccount.id,
-      parseInt(Math.random() * 1000000)
-    );
-    console.log(tx.hash);
-    NotificationManager.success("Transaction submitted");
+    try {
+      setIsUpgrading(true);
+      const fee = await premiumContract.getUpgradeFeeInToken();
+      const balance = await erc20Contract.balanceOf(address);
+      
+      if (balance.lt(fee)) {
+        NotificationManager.error("Insufficient Balance");
+        return;
+      }
+      await erc20Contract.approve(premiumContract.address, fee)
+      await sleep(5000)
+      const tx = await premiumContract.joinArmy(
+        currentAccount.id,
+        parseInt(Math.random() * 1000000)
+      );
+      console.log(tx.hash);
+      NotificationManager.success("Transaction submitted");
+    } catch (error) {
+      console.error(error);
+      NotificationManager.error("Error in processing transaction");
+    } finally {
+      setIsUpgrading(false);
+    }
   };
 
   return (
@@ -132,25 +151,47 @@ const Dashboard = ({ match, currentAccount,history }) => {
                 {isConnected ? (
                   <>
                     {!currentAccount.registered ? (
-                     <>
-                     <Button
-                        onClick={() => {
-                          setShowGetStartedModal(true);
-                        }}
-                      >
-                        Get Started Now
-                      </Button>
-                     </>
+                      <>
+                        <Button
+                          onClick={() => {
+                            setShowGetStartedModal(true);
+                          }}
+                        >
+                          Get Started Now
+                        </Button>
+                      </>
                     ) : (
                       <>
                         {!currentAccount.premiumLevel > 0 ? (
-                          <Button onCanPlay={joinDFCArmy}>Join DFC Army</Button>
+                          <Button
+                            onClick={joinDFCArmy}
+                            type="submit"
+                            color="primary"
+                            className={`btn-shadow btn-multiple-state ${
+                              isUpgrading ? "show-spinner" : ""
+                            }`}
+                            size="lg"
+                          >
+                            <span className="spinner d-inline-block">
+                              <span className="bounce1" />
+                              <span className="bounce2" />
+                              <span className="bounce3" />
+                            </span>
+                            <span className="label">Join DFC Army</span>
+                          </Button>
                         ) : (
                           <>
-                          <span>
-                            Congratulations! You're on your way to better days
-                          </span> <br/>
-                          <Button onClick={()=>{history.push('/army')}}>Go To Army Dashboard</Button>
+                            <span>
+                              Congratulations! You're on your way to better days
+                            </span>{" "}
+                            <br />
+                            <Button
+                              onClick={() => {
+                                history.push("/army");
+                              }}
+                            >
+                              Go To Army Dashboard
+                            </Button>
                           </>
                         )}
                       </>

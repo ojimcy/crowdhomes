@@ -5,10 +5,8 @@ import { connect } from 'react-redux';
 import { Card, CardBody, CardHeader, Label, Row } from 'reactstrap';
 import Breadcrumb from 'containers/navs/Breadcrumb';
 import './profile.css';
-import EditProfileModal from 'containers/account/EditProfiltModal';
 
-const Profile = ({ currentUser, match }) => {
-  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+const Profile = ({ currentAccount, match }) => {
 
   return (
     <>
@@ -23,31 +21,28 @@ const Profile = ({ currentUser, match }) => {
         <Colxx xxs="12">
           <Card>
             <div className="position-absolute card-top-buttons">
-              <span>ConnectedWallet</span>
+              <span>{currentAccount.walletAddress}</span>
             </div>
-            <EditProfileModal
-              currentUser={currentUser}
-              showModal={showEditProfileModal}
-              handleClose={() => setShowEditProfileModal(false)}
-            />
             <CardHeader>
               <p className="h2 mt-3">Profile</p>
             </CardHeader>
             <CardBody>
               <Row>
                 <Colxx xxs="12">
-                  <Label>Package</Label>
-                  <p className="info-text">
-                    Gold
-                  </p>
-                </Colxx>
-                <Colxx xxs="12">
                   <Label>Account ID</Label>
-                  <p className="info-text">1</p>
+                  <p className="info-text">{currentAccount.id}</p>
                 </Colxx>
                 <Colxx xxs="12">
-                  <Label>Referral ID</Label>
-                  <p className="info-text">0</p>
+                  <Label>Upline ID</Label>
+                  <p className="info-text">{currentAccount.uplineID}</p>
+                </Colxx>
+                <Colxx xxs="12">
+                  <Label>Level</Label>
+                  <p className="info-text">{currentAccount.premiumLevel}</p>
+                </Colxx>
+                <Colxx xxs="12">
+                  <Label>Referrals Count</Label>
+                  <p className="info-text">{currentAccount.referralsCount}</p>
                 </Colxx>
               </Row>
             </CardBody>
@@ -59,10 +54,10 @@ const Profile = ({ currentUser, match }) => {
 };
 
 const mapStateToProps = ({ authUser }) => {
-  const { currentUser } = authUser;
+  const { currentAccount } = authUser;
 
   return {
-    currentUser,
+    currentAccount,
   };
 };
 

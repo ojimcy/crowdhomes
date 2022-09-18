@@ -147,7 +147,7 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "priceOracle",
+    "name": "lpPair",
     "outputs": [
       {
         "internalType": "address",
@@ -166,7 +166,7 @@ const abi = [
         "type": "address"
       }
     ],
-    "name": "setPriceOracle",
+    "name": "setLpPair",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
