@@ -1,21 +1,21 @@
-import React, { Suspense } from 'react';
-import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, { Suspense } from "react";
+import { Route, withRouter, Switch, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-import AppLayout from 'layout/AppLayout';
+import AppLayout from "layout/AppLayout";
 // import { ProtectedRoute, UserRole } from 'helpers/authHelper';
 
 const Profile = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-account" */ './account/Profile')
+  import(/* webpackChunkName: "viwes-account" */ "./account/Profile")
 );
 const Dashboard = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-dashboard" */ './dashboard')
+  import(/* webpackChunkName: "viwes-dashboard" */ "./dashboard")
 );
 const Referrals = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-dashboard" */ './account/Referrals')
+  import(/* webpackChunkName: "viwes-dashboard" */ "./account/Referrals")
 );
 const Matrix = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-dashboard" */ './account/Matrix')
+  import(/* webpackChunkName: "viwes-dashboard" */ "./account/Matrix")
 );
 
 const App = ({ match }) => {
@@ -24,18 +24,10 @@ const App = ({ match }) => {
       <div className="dashboard-wrapper">
         <Suspense fallback={<div className="loading" />}>
           <Switch>
-            <Redirect
-              exact
-              from={`${match.url}/`}
-              to={`${match.url}/realfi`}
-            />
+            <Redirect exact from={`${match.url}/`} to={`${match.url}/realfi`} />
             <Route
               path={`${match.url}/realfi`}
               render={(props) => <Dashboard {...props} />}
-            />
-            <Route
-              path={`${match.url}/army`}
-              render={(props) => <Profile {...props} />}
             />
             <Route
               path={`${match.url}/army/referrals`}
@@ -48,6 +40,10 @@ const App = ({ match }) => {
             <Route
               path={`${match.url}/army/how-it-works`}
               render={(props) => <Matrix {...props} />}
+            />
+            <Route
+              path={`${match.url}/army`}
+              render={(props) => <Profile {...props} />}
             />
             <Redirect to="/error" />
           </Switch>

@@ -14,9 +14,9 @@ const data = [
     to: '#',
     subs: [
       {
-        icon: 'simple-icon-notebook',
-        label: 'menu.army.how-it-works',
-        to: `${adminRoot}/army/how-it-works`,
+        icon: 'simple-icon-paper-plane',
+        label: 'menu.army.profile',
+        to: `${adminRoot}/army`,
       },
       {
         icon: 'simple-icon-paper-plane',
@@ -27,6 +27,11 @@ const data = [
         icon: 'simple-icon-paper-plane',
         label: 'menu.army.referrals',
         to: `${adminRoot}/army/referrals`,
+      },
+      {
+        icon: 'simple-icon-notebook',
+        label: 'menu.army.how-it-works',
+        to: `${adminRoot}/army/how-it-works`,
       },
     ],
   },

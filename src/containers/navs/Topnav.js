@@ -101,9 +101,9 @@ const TopNav = ({
               <span className="name mr-1">
                 {isConnected ? (
                   <>
-                    Connected to: {address.substring(0, 5)}...{address.substring(address.length-4, address.length-1)}{" | "}
+                    Connected to: {address.substring(0, 5)}...{address.substring(address.length-4, address.length-1)}
                     {currentAccount && currentAccount.registered ? (
-                      <>Account ID: {currentAccount.id}</>
+                      <>{" | "}Account ID: {currentAccount.id}</>
                     ) : (
                       ""
                     )}

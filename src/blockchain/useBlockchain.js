@@ -14,7 +14,7 @@ const useBlockchain = () => {
 
   const systemContract = useContract({
     addressOrName: system,
-    contractInterface: systemAbi,
+    contractInterface: premiumAbi, //systemAbi,
     signerOrProvider: signerData,
   });
 
