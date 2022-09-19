@@ -1,14 +1,18 @@
-import React, { Suspense } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import React, { Suspense } from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
 
 const Profile = React.lazy(() =>
-  import(/* webpackChunkName: "account-profile" */ './Profile')
+  import(/* webpackChunkName: "account-profile" */ "./Profile")
 );
 const Referrals = React.lazy(() =>
-  import(/* webpackChunkName: "account-team" */ './Referrals.js')
+  import(/* webpackChunkName: "account-team" */ "./Referrals.js")
 );
 const Matrix = React.lazy(() =>
-  import(/* webpackChunkName: "account-team" */ './Matrix.js')
+  import(/* webpackChunkName: "account-matrix" */ "./Matrix.js")
+);
+
+const HowItWorks = React.lazy(() =>
+  import(/* webpackChunkName: "account-how" */ "./how-it-works.js")
 );
 
 const Account = ({ match }) => (
@@ -29,7 +33,7 @@ const Account = ({ match }) => (
       />
       <Route
         path={`${match.url}/how-it-works`}
-        render={(props) => <Referrals {...props} />}
+        render={(props) => <HowItWorks {...props} />}
       />
       <Redirect to="/error" />
     </Switch>

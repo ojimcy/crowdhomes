@@ -15,11 +15,6 @@ const data = [
     subs: [
       {
         icon: 'simple-icon-paper-plane',
-        label: 'menu.army.profile',
-        to: `${adminRoot}/account`,
-      },
-      {
-        icon: 'simple-icon-paper-plane',
         label: 'menu.army.matrix',
         to: `${adminRoot}/account/matrix`,
       },
@@ -33,6 +28,13 @@ const data = [
         label: 'menu.army.how-it-works',
         to: `${adminRoot}/account/how-it-works`,
       },
+
+      {
+        icon: 'simple-icon-paper-plane',
+        label: 'menu.army.profile',
+        to: `${adminRoot}/account`
+      },
+      
     ],
   },
   {
