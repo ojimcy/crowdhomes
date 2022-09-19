@@ -8,7 +8,7 @@ const data = [
     to: `${adminRoot}/realfi`,
   },
   {
-    id: 'army',
+    id: 'account',
     icon: 'simple-icon-user',
     label: 'menu.army',
     to: '#',
