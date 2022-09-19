@@ -5,17 +5,11 @@ import { connect } from "react-redux";
 import AppLayout from "layout/AppLayout";
 // import { ProtectedRoute, UserRole } from 'helpers/authHelper';
 
-const Profile = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-account" */ "./account/Profile")
-);
 const Dashboard = React.lazy(() =>
   import(/* webpackChunkName: "viwes-dashboard" */ "./dashboard")
 );
-const Referrals = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-dashboard" */ "./account/Referrals")
-);
-const Matrix = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-dashboard" */ "./account/Matrix")
+const Account = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-dashboard" */ "./account")
 );
 
 const App = ({ match }) => {
@@ -30,20 +24,8 @@ const App = ({ match }) => {
               render={(props) => <Dashboard {...props} />}
             />
             <Route
-              path={`${match.url}/army/referrals`}
-              render={(props) => <Referrals {...props} />}
-            />
-            <Route
-              path={`${match.url}/army/matrix`}
-              render={(props) => <Matrix {...props} />}
-            />
-            <Route
-              path={`${match.url}/army/how-it-works`}
-              render={(props) => <Matrix {...props} />}
-            />
-            <Route
-              path={`${match.url}/army`}
-              render={(props) => <Profile {...props} />}
+              path={`${match.url}/account`}
+              render={(props) => <Account {...props} />}
             />
             <Redirect to="/error" />
           </Switch>

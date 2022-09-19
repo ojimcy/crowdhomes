@@ -6,7 +6,9 @@ export default class MatrixNode {
     right = {};
 
     load = async (id, level, blockLevel, contract) => {
-        if (!id) return;
+        if (!id) {
+            return;
+        }
         this.id = id;
         if (blockLevel <= 0) return;
 

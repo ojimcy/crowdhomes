@@ -16,22 +16,22 @@ const data = [
       {
         icon: 'simple-icon-paper-plane',
         label: 'menu.army.profile',
-        to: `${adminRoot}/army`,
+        to: `${adminRoot}/account`,
       },
       {
         icon: 'simple-icon-paper-plane',
         label: 'menu.army.matrix',
-        to: `${adminRoot}/army/matrix`,
+        to: `${adminRoot}/account/matrix`,
       },
       {
         icon: 'simple-icon-paper-plane',
         label: 'menu.army.referrals',
-        to: `${adminRoot}/army/referrals`,
+        to: `${adminRoot}/account/referrals`,
       },
       {
         icon: 'simple-icon-notebook',
         label: 'menu.army.how-it-works',
-        to: `${adminRoot}/army/how-it-works`,
+        to: `${adminRoot}/account/how-it-works`,
       },
     ],
   },
