@@ -2,8 +2,7 @@ import React from "react";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
-import { Card, CardBody, CardHeader, Label, Row } from "reactstrap";
-import ListGroup from "react-bootstrap/ListGroup";
+import { Card, CardBody, Row } from "reactstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
 import "./profile.css";
 

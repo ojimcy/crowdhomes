@@ -46,6 +46,7 @@ module.exports = {
   'menu.matrix': 'Matrix',
   'menu.staking': 'DFC Staking',
   'menu.army.profile': 'Profile',
+  'menu.how-it-works': 'How It Works',
   
   'menu.gogo': 'Gogo',
   'menu.start': 'Start',
