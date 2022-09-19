@@ -25,24 +25,35 @@ const Dashboard = ({ match, currentAccount, history }) => {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const { isConnected, address } = useAccount();
   const { premiumContract, systemContract, erc20Contract } = useBlockchain();
+  const [dfcBalance, setDfcBalance] = useState(0);
 
   useEffect(() => {
-    window.systemContract = systemContract;
-    window.premiumContract = premiumContract;
-  });
+    if (!isConnected || !erc20Contract) return;
+    const fn = async () => {
+      window.systemContract = systemContract;
+      window.premiumContract = premiumContract;
+      try {
+        const dfcBalance = await erc20Contract.balanceOf(address);
+        setDfcBalance(parseInt(dfcBalance.div(1e8)));
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    fn();
+  }, [erc20Contract]);
 
   const joinDFCArmy = async () => {
     try {
       setIsUpgrading(true);
       const fee = await premiumContract.getUpgradeFeeInToken();
       const balance = await erc20Contract.balanceOf(address);
-      
+
       if (balance.lt(fee)) {
         NotificationManager.error("Insufficient Balance");
         return;
       }
-      await erc20Contract.approve(premiumContract.address, fee)
-      await sleep(5000)
+      await erc20Contract.approve(premiumContract.address, fee);
+      await sleep(5000);
       const tx = await premiumContract.joinArmy(
         currentAccount.id,
         parseInt(Math.random() * 1000000)
@@ -110,9 +121,9 @@ const Dashboard = ({ match, currentAccount, history }) => {
                   <CardBody className="text-center">
                     <i className="iconsminds-dollar" />
                     <p className="card-text font-weight-semibold mb-0">
-                      My Contribution
+                      DFC Balance
                     </p>
-                    <p className="lead text-center">$0.0000</p>
+                    <p className="lead text-center">{dfcBalance}</p>
                   </CardBody>
                 </Card>
               </div>
@@ -125,7 +136,9 @@ const Dashboard = ({ match, currentAccount, history }) => {
                     <p className="card-text font-weight-semibold mb-0">
                       My Total Earnings
                     </p>
-                    <p className="lead text-center">$0.0000</p>
+                    <p className="lead text-center">
+                      {currentAccount.totalEarnings | "0.00"}
+                    </p>
                   </CardBody>
                 </Card>
               </div>

@@ -9,6 +9,7 @@ import { NotificationManager } from "components/common/react-notifications";
 import { useAccount } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { setWeb3CurrentID } from "redux/auth/actions";
+import { ethers } from "ethers";
 
 const AppLayout = ({
   containerClassnames,
@@ -44,6 +45,7 @@ const AppLayout = ({
               uplineID: parseInt(user.uplineID),
               referralsCount: parseInt(user.referralsCount),
               walletAddress: address,
+              totalEarnings: parseFloat(ethers.utils.formatEther(user.totalEarnings)).toFixed(2)
             };
           }
         }

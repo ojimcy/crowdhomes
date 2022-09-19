@@ -47,6 +47,7 @@ module.exports = {
   'menu.staking': 'DFC Staking',
   'menu.army.profile': 'Profile',
   'menu.how-it-works': 'How It Works',
+  'menu.profile': 'Profile',
   
   'menu.gogo': 'Gogo',
   'menu.start': 'Start',

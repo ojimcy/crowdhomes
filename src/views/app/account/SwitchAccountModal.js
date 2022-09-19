@@ -14,6 +14,7 @@ import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { setWeb3CurrentID } from "redux/auth/actions";
 import useBlockchain from "blockchain/useBlockchain";
+import { ethers } from "ethers";
 
 const SwitchAccountModal = ({
   showModal,
@@ -64,6 +65,7 @@ const SwitchAccountModal = ({
         uplineID: parseInt(user.uplineID),
         referralsCount: parseInt(user.referralsCount),
         walletAddress: walletAddress,
+        totalEarnings: parseFloat(ethers.utils.formatEther(user.totalEarnings)).toFixed(2)
       };
 
       setWeb3CurrentIDAction(userData);

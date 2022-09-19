@@ -488,6 +488,11 @@ const abi = [
         "internalType": "uint256",
         "name": "referralsCount",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalEarnings",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
