@@ -12,7 +12,7 @@ const Account = React.lazy(() =>
   import(/* webpackChunkName: "viwes-dashboard" */ "./account")
 );
 const Staking = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-dashboard" */ "./staking")
+  import(/* webpackChunkName: "viwes-dashboard" */ "./staking/staking")
 );
 
 const App = ({ match }) => {
