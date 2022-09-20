@@ -44,7 +44,7 @@ const Staking = ({ match, currentAccount, history }) => {
         <Colxx md="12">
           <h6 className="top-callout">DFC Staking</h6>
           <p className="top-callout-text">
-            Stake a minimum of $100 worth of DFC and earn upto 20% per annum.
+            Stake a minimum of $10 worth of DFC and earn upto 25% per annum.
           </p>
         </Colxx>
 

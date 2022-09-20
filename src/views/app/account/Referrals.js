@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Colxx } from "components/common/CustomBootstrap";
-import { Button, Card, CardBody, CardHeader, CardTitle, Row } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Row,
+} from "reactstrap";
 import useBlockchain from "blockchain/useBlockchain";
 import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { useAccount, useProvider } from "wagmi";
+import { Field } from "formik";
+import { NotificationManager } from "components/common/react-notifications";
 
 const Referrals = ({ currentAccount }) => {
   const { premiumContract, erc20Contract } = useBlockchain();
@@ -15,12 +27,16 @@ const Referrals = ({ currentAccount }) => {
   const [maxPage, setMaxPage] = useState();
   const [loading, setLoading] = useState(false);
   const provider = useProvider();
+  const [referralLink, setReferralLink] = useState("");
 
   useEffect(() => {
     if (!isConnected) return;
     const accountID = currentAccount.id;
     const fn = async () => {
       try {
+        setReferralLink(
+          `https://realfi.deficonnect.tech/app/realfi?ref=${currentAccount.id}`
+        );
         setLoading(true);
         const res = [];
         const referralIDs = await premiumContract.getReferrals(
@@ -103,9 +119,14 @@ const Referrals = ({ currentAccount }) => {
       setLoading(false);
       window.alert("Done");
     } catch (error) {
-      alert('error, try again')
-      console.log(error)
+      alert("error, try again");
+      console.log(error);
     }
+  };
+
+  const copyReferralLink = () => {
+    navigator.clipboard.writeText(referralLink);
+    NotificationManager.success("Copied");
   };
 
   return (
@@ -163,6 +184,32 @@ const Referrals = ({ currentAccount }) => {
               </div>
             </CardHeader>
             <CardBody className="table-border-style">
+              <p className="top-callout-text">
+                Invite friends and earn $10 for each recruitment
+                <Row>
+                  <Colxx md={6} xx={12}>
+                    <InputGroup className="mb-3 mt-2">
+                      <InputGroupAddon addonType="prepend">
+                        <Button outline color="secondary">
+                          Referral Link
+                        </Button>
+                      </InputGroupAddon>
+
+                      <Input value={referralLink} />
+
+                      <InputGroupAddon addonType="append">
+                        <Button
+                          outline
+                          color="secondary"
+                          onClick={copyReferralLink}
+                        >
+                          Copy Link
+                        </Button>
+                      </InputGroupAddon>
+                    </InputGroup>
+                  </Colxx>
+                </Row>
+              </p>
               <div className="table-responsive">
                 <table className="table">
                   <thead>
@@ -187,13 +234,14 @@ const Referrals = ({ currentAccount }) => {
                               ""
                             )}
                             {directReferral.premiumLevel === 0 ? (
-                              <button
+                              <Button className="default"
                                 onClick={() =>
                                   upgradeDownline(directReferral.id, i)
                                 }
+                                color="secondary"
                               >
                                 Upgrade to Premium
-                              </button>
+                              </Button>
                             ) : (
                               ""
                             )}
