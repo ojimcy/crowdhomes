@@ -11,6 +11,9 @@ const Dashboard = React.lazy(() =>
 const Account = React.lazy(() =>
   import(/* webpackChunkName: "viwes-dashboard" */ "./account")
 );
+const Staking = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-dashboard" */ "./staking")
+);
 
 const App = ({ match }) => {
   return (
@@ -26,6 +29,10 @@ const App = ({ match }) => {
             <Route
               path={`${match.url}/account`}
               render={(props) => <Account {...props} />}
+            />
+            <Route
+              path={`${match.url}/staking`}
+              render={(props) => <Staking {...props} />}
             />
             <Redirect to="/error" />
           </Switch>
