@@ -69,62 +69,74 @@ const GetStartedModal = ({
   const register = async (values) => {
     try {
       setIsLoading(true);
-    submitted.current = true;
+      submitted.current = true;
 
-    let uplineID = values.uplineID
-    if(!settingUplineID) {
-      uplineID = 0
-    }
-    const tx = await premiumContract.register(
-      values.referralID,
-      uplineID,
-      values.withdrawalAddress
-    );
+      let uplineID = values.uplineID;
+      if (!settingUplineID) {
+        uplineID = 0;
+      }
+      const tx = await premiumContract.register(
+        values.referralID,
+        uplineID,
+        values.withdrawalAddress
+      );
 
-    const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
+      const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
+      if (!receipt) {
+        setIsLoading(false);
 
-    const id = parseInt(receipt.logs[0].topics[1]);
-    const user = await premiumContract.getUser(id);
-    if (user.registered) {
-      const userData = {
-        id,
-        registered: user.registered,
-        premiumLevel: parseInt(user.premiumLevel),
-        referralID: parseInt(user.referralID),
-        uplineID: parseInt(user.uplineID),
-        referralsCount: parseInt(user.referralsCount),
-        walletAddress: values.withdrawalAddress,
-        totalEarnings: parseFloat(
-          ethers.utils.formatEther(user.totalEarnings)
-        ).toFixed(2),
-      };
+        NotificationManager.error(
+          `Account creation failed. Something went wrong`,
+          "Error",
+          3000,
+          null,
+          null,
+          ""
+        );
+      }
 
-      setWeb3CurrentIDAction(userData);
-    }
+      const id = parseInt(receipt.logs[0].topics[1]);
+      const user = await premiumContract.getUser(id);
+      if (user.registered) {
+        const userData = {
+          id,
+          registered: user.registered,
+          premiumLevel: parseInt(user.premiumLevel),
+          referralID: parseInt(user.referralID),
+          uplineID: parseInt(user.uplineID),
+          referralsCount: parseInt(user.referralsCount),
+          walletAddress: values.withdrawalAddress,
+          totalEarnings: parseFloat(
+            ethers.utils.formatEther(user.totalEarnings)
+          ).toFixed(2),
+        };
 
-    handleClose();
-    setIsLoading(false);
+        setWeb3CurrentIDAction(userData);
+      }
 
-    NotificationManager.warning(
-      `Create account. Congratulations! Your account ID is ${id}`,
-      "Notice",
-      3000,
-      null,
-      null,
-      ""
-    );
+      handleClose();
+      setIsLoading(false);
+
+      NotificationManager.warning(
+        `Create account. Congratulations! Your account ID is ${id}`,
+        "Notice",
+        3000,
+        null,
+        null,
+        ""
+      );
     } catch (error) {
       setIsLoading(false);
 
-    NotificationManager.error(
-      `Account creation failed. Something went wrong`,
-      "Error",
-      3000,
-      null,
-      null,
-      ""
-    );
-      console.log(error)
+      NotificationManager.error(
+        `Account creation failed. Something went wrong`,
+        "Error",
+        3000,
+        null,
+        null,
+        ""
+      );
+      console.log(error);
     }
   };
 
