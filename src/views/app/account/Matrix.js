@@ -25,24 +25,28 @@ const Matrix = ({ currentAccount, match }) => {
   useEffect(() => {
     if (!isConnected || !id || !premiumContract) return;
     const fn = async () => {
-      const id_ = id || currentAccount.id;
-      const level_ = level || currentAccount.level;
-      const user = await premiumContract.getUser(BigNumber.from(id_));
-      setUser(user);
+      try {
+        const id_ = id || currentAccount.id;
+        const level_ = level || currentAccount.level;
+        const user = await premiumContract.getUser(BigNumber.from(id_));
+        setUser(user);
 
-      // block 1
-      const rNode = new MatrixNode();
-      rNode.level = parseInt(user.premiumLevel);
-      await rNode.load(id, level_, 1, premiumContract);
-      setRootNode(rNode);
+        // block 1
+        const rNode = new MatrixNode();
+        rNode.level = parseInt(user.premiumLevel);
+        await rNode.load(id, level_, 1, premiumContract);
+        setRootNode(rNode);
 
-      const left = new MatrixNode();
-      await left.load(rNode.left.id, level_, 1, premiumContract);
-      setLeftNode(left);
+        const left = new MatrixNode();
+        await left.load(rNode.left.id, level_, 1, premiumContract);
+        setLeftNode(left);
 
-      const right = new MatrixNode();
-      await right.load(rNode.right.id, level_, 1, premiumContract);
-      setRightNode(right);
+        const right = new MatrixNode();
+        await right.load(rNode.right.id, level_, 1, premiumContract);
+        setRightNode(right);
+      } catch (error) {
+        console.log(error)
+      }
     };
     fn();
   }, [premiumContract, isConnected, id, level]);
@@ -97,9 +101,7 @@ const Matrix = ({ currentAccount, match }) => {
             {rootNode.loaded ? (
               <div className="card-body table-border-style tree">
                 <div className="container">
-                  <h1
-                    className="level-1 rectangle"
-                  >
+                  <h1 className="level-1 rectangle">
                     <a
                       href="#"
                       onClick={() => to(rootNode.id, rootNode.level)}
@@ -111,8 +113,7 @@ const Matrix = ({ currentAccount, match }) => {
                   </h1>
                   <ol className="level-2-wrapper">
                     <li>
-                      <h2
-                        className="level-2 rectangle">
+                      <h2 className="level-2 rectangle">
                         {rootNode.left.id === 0 ? (
                           <span className="text-white">Empty</span>
                         ) : (
@@ -128,8 +129,7 @@ const Matrix = ({ currentAccount, match }) => {
                       </h2>
                       <ol className="level-3-wrapper">
                         <li>
-                          <h2
-                            className="level-3 rectangle">
+                          <h2 className="level-3 rectangle">
                             {leftNode.left.id === 0 ? (
                               <span className="text-white">Empty</span>
                             ) : (
@@ -145,8 +145,7 @@ const Matrix = ({ currentAccount, match }) => {
                           </h2>
                         </li>
                         <li>
-                          <h2
-                            className="level-3 rectangle">
+                          <h2 className="level-3 rectangle">
                             {leftNode.right.id === 0 ? (
                               <span className="text-white">Empty</span>
                             ) : (
@@ -164,8 +163,7 @@ const Matrix = ({ currentAccount, match }) => {
                       </ol>
                     </li>
                     <li>
-                      <h2
-                        className="level-2 rectangle">
+                      <h2 className="level-2 rectangle">
                         {rootNode.right.id === 0 ? (
                           <span className="text-white">Empty</span>
                         ) : (
@@ -181,8 +179,7 @@ const Matrix = ({ currentAccount, match }) => {
                       </h2>
                       <ol className="level-3-wrapper">
                         <li>
-                          <h3
-                            className="level-3 rectangle">
+                          <h3 className="level-3 rectangle">
                             {rightNode.left.id === 0 ? (
                               <span className="text-white">Empty</span>
                             ) : (
@@ -198,8 +195,7 @@ const Matrix = ({ currentAccount, match }) => {
                           </h3>
                         </li>
                         <li>
-                          <h3
-                            className="level-3 rectangle">
+                          <h3 className="level-3 rectangle">
                             {rightNode.right.id === 0 ? (
                               <span className="text-white">Empty</span>
                             ) : (

@@ -14,10 +14,11 @@ import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
 import GetStartedModal from "./account/GetStartedModal";
 import ConnectWalletModal from "./account/ConnectWalletModal";
-import { useAccount } from "wagmi";
+import { useAccount, useProvider } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { NotificationManager } from "components/common/react-notifications";
 import { sleep } from "helpers/sleeper";
+import { BigNumber } from "ethers";
 
 const Dashboard = ({ match, currentAccount, history }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
@@ -26,17 +27,29 @@ const Dashboard = ({ match, currentAccount, history }) => {
   const { isConnected, address } = useAccount();
   const { premiumContract, systemContract, erc20Contract } = useBlockchain();
   const [dfcBalance, setDfcBalance] = useState(0);
+  const provider = useProvider();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
+    if (ref) {
+      localStorage.setItem("refID", ref);
+      setShowGetStartedModal(true);
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     if (!isConnected || !erc20Contract) return;
     const fn = async () => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
+      window.provider = provider;
+
       try {
         const dfcBalance = await erc20Contract.balanceOf(address);
         setDfcBalance(parseInt(dfcBalance.div(1e8)));
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
     fn();
@@ -52,8 +65,20 @@ const Dashboard = ({ match, currentAccount, history }) => {
         NotificationManager.error("Insufficient Balance");
         return;
       }
-      await erc20Contract.approve(premiumContract.address, fee);
-      await sleep(5000);
+      const allowance = await erc20Contract.allowance(
+        address,
+        premiumContract.address
+      );
+
+      if (parseInt(allowance) === 0) {
+        let approvalTx = await erc20Contract.approve(
+          premiumContract.address,
+          totalSupply
+        );
+        console.log(approvalTx);
+        await provider.waitForTransaction(approvalTx.hash, 1, 45000);
+      }
+
       const tx = await premiumContract.joinArmy(
         currentAccount.id,
         parseInt(Math.random() * 1000000)
@@ -200,7 +225,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
                             <br />
                             <Button
                               onClick={() => {
-                                history.push("/army");
+                                history.push("/app/account/matrix");
                               }}
                             >
                               Go To Army Dashboard

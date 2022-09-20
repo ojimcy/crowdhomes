@@ -308,6 +308,19 @@ const abi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getDollarRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -501,29 +514,6 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_pairAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_treasury",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_baseToken",
-        "type": "address"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "userID",
         "type": "uint256"
@@ -663,6 +653,24 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "retrieveToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "oracle",
         "type": "address"
       }
@@ -722,29 +730,6 @@ const abi = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "userID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "position",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "random",
-        "type": "uint256"
-      }
-    ],
-    "name": "upgradeReplacementAccount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

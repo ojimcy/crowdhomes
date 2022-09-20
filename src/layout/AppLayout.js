@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
@@ -21,6 +21,7 @@ const AppLayout = ({
 }) => {
   const { address, isConnected } = useAccount();
   const { premiumContract } = useBlockchain();
+
   useEffect(() => {
     if (error) {
       NotificationManager.warning(error, "Error", 3000, null, null, "");
@@ -35,6 +36,8 @@ const AppLayout = ({
         let userData = {};
         if (address) {
           const id = await premiumContract.getFirstAccountID(address);
+          if (parseInt(id) === 0) return;
+
           const user = await premiumContract.getUser(id);
           if (user.registered) {
             userData = {
@@ -45,7 +48,9 @@ const AppLayout = ({
               uplineID: parseInt(user.uplineID),
               referralsCount: parseInt(user.referralsCount),
               walletAddress: address,
-              totalEarnings: parseFloat(ethers.utils.formatEther(user.totalEarnings)).toFixed(2)
+              totalEarnings: parseFloat(
+                ethers.utils.formatEther(user.totalEarnings)
+              ).toFixed(2),
             };
           }
         }

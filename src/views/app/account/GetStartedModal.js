@@ -7,6 +7,7 @@ import {
   Button,
   Label,
   FormGroup,
+  CustomInput,
 } from "reactstrap";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
@@ -16,10 +17,19 @@ import { NotificationManager } from "components/common/react-notifications";
 import { useAccount, useProvider, useWaitForTransaction } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { sleep } from "helpers/sleeper";
+import { setWeb3CurrentID } from "redux/auth/actions";
+import { ethers } from "ethers";
 
-const GetStartedModal = ({ showModal, handleClose, title, currentAccount }) => {
+const GetStartedModal = ({
+  showModal,
+  handleClose,
+  title,
+  currentAccount,
+  setWeb3CurrentIDAction,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hash, setHash] = useState();
+  const [settingUplineID, setSettingUplineID] = useState(false);
   const submitted = useRef(false);
   const { address } = useAccount();
   const { premiumContract, systemContract } = useBlockchain();
@@ -57,47 +67,74 @@ const GetStartedModal = ({ showModal, handleClose, title, currentAccount }) => {
   }, [txError]);
 
   const register = async (values) => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
     submitted.current = true;
 
+    let uplineID = values.uplineID
+    if(!settingUplineID) {
+      uplineID = 0
+    }
     const tx = await premiumContract.register(
       values.referralID,
-      values.uplineID,
+      uplineID,
       values.withdrawalAddress
     );
 
-    console.log(tx.hash);
+    const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
 
-    let counter = 0;
-    while (true) {
-      let mintedTx = await provider.getTransaction(tx.hash);
-      if (mintedTx) {
-        console.log(mintedTx);
-        setIsLoading(false);
-        break;
-      }
-      if (counter > 6) {
-        console.log("cannot resolve the transaction");
-        setIsLoading(false);
-        break;
-      }
-      await sleep(1000);
-      counter++;
+    const id = parseInt(receipt.logs[0].topics[1]);
+    const user = await premiumContract.getUser(id);
+    if (user.registered) {
+      const userData = {
+        id,
+        registered: user.registered,
+        premiumLevel: parseInt(user.premiumLevel),
+        referralID: parseInt(user.referralID),
+        uplineID: parseInt(user.uplineID),
+        referralsCount: parseInt(user.referralsCount),
+        walletAddress: values.withdrawalAddress,
+        totalEarnings: parseFloat(
+          ethers.utils.formatEther(user.totalEarnings)
+        ).toFixed(2),
+      };
+
+      setWeb3CurrentIDAction(userData);
     }
 
+    handleClose();
+    setIsLoading(false);
+
     NotificationManager.warning(
-      "Create account. Congratulations",
+      `Create account. Congratulations! Your account ID is ${id}`,
       "Notice",
       3000,
       null,
       null,
       ""
     );
+    } catch (error) {
+      setIsLoading(false);
+
+    NotificationManager.error(
+      `Account creation failed. Something went wrong`,
+      "Error",
+      3000,
+      null,
+      null,
+      ""
+    );
+      console.log(error)
+    }
   };
 
   const initialValues = {
-    referralID: currentAccount.id || 1,
-    uplineID: currentAccount.id || 1,
+    referralID: currentAccount.id || localStorage.getItem("refID") || 1,
+    uplineID:
+      currentAccount.id ||
+      localStorage.getItem("refID") ||
+      currentAccount.id ||
+      1,
     withdrawalAddress: currentAccount.walletAddress || address,
   };
   return (
@@ -132,15 +169,29 @@ const GetStartedModal = ({ showModal, handleClose, title, currentAccount }) => {
                 )}
               </FormGroup>
 
-              <FormGroup className="form-group has-float-label">
-                <Label>Upline ID</Label>
-                <Field className="form-control" name="uplineID" required />
-                {errors.uplineID && touched.uplineID && (
-                  <div className="invalid-feedback d-block">
-                    {errors.uplineID}
-                  </div>
-                )}
+              <FormGroup className="text-left">
+                <CustomInput
+                  value={settingUplineID}
+                  onChange={(el) => setSettingUplineID(el.target.checked)}
+                  type="checkbox"
+                  id="settingUplineID"
+                  label={"Set Matrix Parent ID"}
+                />
               </FormGroup>
+
+              {settingUplineID ? (
+                <FormGroup className="form-group has-float-label">
+                  <Label>Upline ID</Label>
+                  <Field className="form-control" name="uplineID" required />
+                  {errors.uplineID && touched.uplineID && (
+                    <div className="invalid-feedback d-block">
+                      {errors.uplineID}
+                    </div>
+                  )}
+                </FormGroup>
+              ) : (
+                ""
+              )}
             </ModalBody>
 
             <ModalFooter>
@@ -183,4 +234,5 @@ const mapStateToProps = ({ appData, authUser }) => {
 export default connect(mapStateToProps, {
   updateProfileAction: updateProfile,
   updateUserInfoAction: refreshUserInfo,
+  setWeb3CurrentIDAction: setWeb3CurrentID,
 })(GetStartedModal);
