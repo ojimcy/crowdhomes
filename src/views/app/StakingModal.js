@@ -91,17 +91,6 @@ const StakingModal = ({
   return (
     <Modal isOpen={showModal} toggle={handleClose}>
       <ModalHeader>{title || "Stake DFC"}</ModalHeader>
-
-      {packages === "diamond" ? (
-        <>
-          <p>diamond</p>
-        </>
-      ) : (
-        <>
-          <p>ohtess</p>
-        </>
-      )}
-
       <Formik initialValues={initialValues} onSubmit={handleStaking}>
         {({ errors, touched }) => (
           <Form className="av-tooltip tooltip-label-bottom">

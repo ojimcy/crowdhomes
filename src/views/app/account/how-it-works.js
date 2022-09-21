@@ -72,7 +72,7 @@ const HowItWorks = ({ currentAccount, match }) => {
                         <td>Interest Accrued</td>
                         <td>10%</td>
                         <td>15%</td>
-                        <td>40%</td>
+                        <td>25%</td>
                       </tr>
                       <tr>
                         <td>Maturity Period</td>
