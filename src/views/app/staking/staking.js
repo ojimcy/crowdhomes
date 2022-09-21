@@ -33,10 +33,10 @@ const Staking = ({ match, currentAccount, history }) => {
               <StakingCard pkg={'DIAMOND'} interestRate={10} maturityPeriod={6}/>
             </Colxx>
             <Colxx md="4" xxs="12">
-            <StakingCard pkg={'SILVER'} interestRate={9} maturityPeriod={15}/>
+            <StakingCard pkg={'SILVER'} interestRate={15} maturityPeriod={9}/>
             </Colxx>
             <Colxx md="4" xxs="12">
-            <StakingCard pkg={'GOLD'} interestRate={12} maturityPeriod={12}/>
+            <StakingCard pkg={'GOLD'} interestRate={25} maturityPeriod={12}/>
             </Colxx>
           </Row>
         </Colxx>

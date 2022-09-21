@@ -85,13 +85,8 @@ const TopNav = ({
         </NavLink>
       </div>
       <NavLink className="navbar-logo" to={adminRoot}>
-        <span>
-          <img
-            alt="Deficonnect"
-            src="/assets/logos/deficonnect.png"
-            className="logo-img"
-          />
-        </span>
+        <span className="logo d-none d-xs-block" />
+        <span className="logo-mobile d-block d-xs-none" />
       </NavLink>
 
       <div className="navbar-right">

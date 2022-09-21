@@ -17,15 +17,13 @@ import ConnectWalletModal from "./account/ConnectWalletModal";
 import { useAccount, useProvider } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { NotificationManager } from "components/common/react-notifications";
-import { sleep } from "helpers/sleeper";
-import { BigNumber } from "ethers";
 
 const Dashboard = ({ match, currentAccount, history }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
   const { isConnected, address } = useAccount();
-  const { premiumContract, systemContract, erc20Contract } = useBlockchain();
+  const { premiumContract, systemContract, erc20Contract, teamContract } = useBlockchain();
   const [dfcBalance, setDfcBalance] = useState(0);
   const provider = useProvider();
 
@@ -43,6 +41,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
     const fn = async () => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
+      window.teamContract = teamContract;
       window.provider = provider;
 
       try {
@@ -71,6 +70,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
       );
 
       if (parseInt(allowance) === 0) {
+        const totalSupply = await erc20Contract.totalSupply();
         let approvalTx = await erc20Contract.approve(
           premiumContract.address,
           totalSupply

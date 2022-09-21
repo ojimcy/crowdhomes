@@ -89,10 +89,9 @@ const Referrals = ({ currentAccount }) => {
         address,
         premiumContract.address
       );
-
-      const totalSupply = await erc20Contract.totalSupply();
-
+      
       if (parseInt(allowance) === 0) {
+        const totalSupply = await erc20Contract.totalSupply();
         let approvalTx = await erc20Contract.approve(
           premiumContract.address,
           totalSupply

@@ -1,6 +1,6 @@
 import premiumAbi from "./abi/premium";
 import erc20Abi from "./abi/erc20";
-import systemAbi from "./abi/system";
+import teamAbi from "./abi/team";
 import { dfc, premium, system } from "./contracts";
 import { useContract, useSigner } from "wagmi";
 
@@ -24,10 +24,17 @@ const useBlockchain = () => {
     signerOrProvider: signerData,
   });
 
+  const teamContract = useContract({
+    addressOrName: premium,
+    contractInterface: teamAbi,
+    signerOrProvider: signerData,
+  });
+
   return {
     premiumContract,
     erc20Contract,
     systemContract,
+    teamContract,
   };
 };
 export default useBlockchain;

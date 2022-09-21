@@ -70,14 +70,14 @@ const StakingCard = ({pkg, currentAccount, interestRate, maturityPeriod}) => {
                             onClick={() => setInvestmentMode(1)}
                             active={investmentMode === 1}
                           >
-                            DFC
+                            USDT
                           </Button>
                           <Button
                             color="primary"
                             onClick={() => setInvestmentMode(2)}
                             active={investmentMode === 2}
                           >
-                            USDT
+                            DFC
                           </Button>
                         </ButtonGroup>
                       </li>
