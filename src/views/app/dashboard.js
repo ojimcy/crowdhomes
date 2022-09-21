@@ -17,13 +17,16 @@ import ConnectWalletModal from "./account/ConnectWalletModal";
 import { useAccount, useProvider } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { NotificationManager } from "components/common/react-notifications";
+import JoinArmyModal from "./account/JoinArmyModal";
 
 const Dashboard = ({ match, currentAccount, history }) => {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [joinArmyModalIsOpened, setJoinArmyModalIsOpened] = useState(false);
   const { isConnected, address } = useAccount();
-  const { premiumContract, systemContract, erc20Contract, teamContract } = useBlockchain();
+  const { premiumContract, systemContract, erc20Contract, teamContract } =
+    useBlockchain();
   const [dfcBalance, setDfcBalance] = useState(0);
   const provider = useProvider();
 
@@ -201,22 +204,33 @@ const Dashboard = ({ match, currentAccount, history }) => {
                     ) : (
                       <>
                         {!currentAccount.premiumLevel > 0 ? (
-                          <Button
-                            onClick={joinDFCArmy}
-                            type="submit"
-                            color="primary"
-                            className={`btn-shadow btn-multiple-state ${
-                              isUpgrading ? "show-spinner" : ""
-                            }`}
-                            size="lg"
-                          >
-                            <span className="spinner d-inline-block">
-                              <span className="bounce1" />
-                              <span className="bounce2" />
-                              <span className="bounce3" />
-                            </span>
-                            <span className="label">Join DFC Army</span>
-                          </Button>
+                          <>
+                            <Button
+                              onClick={() => {
+                                setJoinArmyModalIsOpened(true);
+                              }}
+                              type="submit"
+                              color="primary"
+                              className={`btn-shadow btn-multiple-state ${
+                                joinArmyModalIsOpened ? "show-spinner" : ""
+                              }`}
+                              size="lg"
+                            >
+                              <span className="spinner d-inline-block">
+                                <span className="bounce1" />
+                                <span className="bounce2" />
+                                <span className="bounce3" />
+                              </span>
+                              <span className="label">Join DFC Army</span>
+                            </Button>
+                            <JoinArmyModal
+                              accountID={currentAccount.id}
+                              showModal={joinArmyModalIsOpened}
+                              handleClose={() => {
+                                setJoinArmyModalIsOpened(false);
+                              }}
+                            />
+                          </>
                         ) : (
                           <>
                             <span>
