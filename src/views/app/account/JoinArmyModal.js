@@ -68,7 +68,7 @@ const JoinArmyModal = ({ showModal, handleClose, accountID }) => {
         <p className="call-out-text">
           Join DFC army program and enter into a world of unimaginable earnings
         </p>
-        <p>Keep Stake As</p>
+        {/* <p>Keep Stake As</p>
         <ButtonGroup>
           <Button
             color="primary"
@@ -84,7 +84,7 @@ const JoinArmyModal = ({ showModal, handleClose, accountID }) => {
           >
             DFC
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
       </ModalBody>
 
       <ModalFooter>

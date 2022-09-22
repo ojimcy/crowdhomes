@@ -51,7 +51,7 @@ const GetStartedModal = ({
       NotificationManager.warning(
         "Account created. Congratulations",
         "Notice",
-        3000,
+        7000,
         null,
         null,
         ""

@@ -194,7 +194,7 @@ const Referrals = ({ currentAccount }) => {
                         </Button>
                       </InputGroupAddon>
 
-                      <Input value={referralLink} />
+                      <Input defaultValue={referralLink} />
 
                       <InputGroupAddon addonType="append">
                         <Button

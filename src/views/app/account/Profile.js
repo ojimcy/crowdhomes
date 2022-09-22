@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Colxx, Separator } from 'components/common/CustomBootstrap';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -34,7 +34,7 @@ const Profile = ({ currentAccount, match }) => {
                 </Colxx>
                 <Colxx xxs="12">
                   <Label>Upline ID</Label>
-                  <p className="info-text">{currentAccount.uplineID}</p>
+                  <p className="info-text">{currentAccount.uplineID>0? currentAccount.uplineID : currentAccount.referralID}</p>
                 </Colxx>
                 <Colxx xxs="12">
                   <Label>Level</Label>

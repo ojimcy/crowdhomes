@@ -25,7 +25,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [joinArmyModalIsOpened, setJoinArmyModalIsOpened] = useState(false);
   const { isConnected, address } = useAccount();
-  const { premiumContract, systemContract, erc20Contract, teamContract } =
+  const { premiumContract, systemContract, erc20Contract, teamContract, farmContract } =
     useBlockchain();
   const [dfcBalance, setDfcBalance] = useState(0);
   const provider = useProvider();
@@ -45,6 +45,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
       window.teamContract = teamContract;
+      window.farmContract = farmContract;
       window.provider = provider;
 
       try {
