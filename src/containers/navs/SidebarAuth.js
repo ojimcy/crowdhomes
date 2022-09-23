@@ -20,54 +20,61 @@ const SidebarAuth = ({ currentAccount, setWeb3CurrentIDAction }) => {
 
   return (
     <>
-    <SwitchAccountModal
-      showModal={showSwitchAccount}
-      handleClose={() => {
-        setShowSwitchAccount(false);
-      }}
-    />
-      {currentAccount.id > 0 ? (
+      <SwitchAccountModal
+        showModal={showSwitchAccount}
+        handleClose={() => {
+          setShowSwitchAccount(false);
+        }}
+      />
+      {isConnected ? (
         <>
-          <NavItem>
-            <a href="#" onClick={()=>setShowSwitchAccount(true)}>
-              Switch Account
-            </a>
-          </NavItem>
-          <NavItem>
-            <a href="#" onClick={()=>setShowGetStartedModal(true)}>
-              Add Account
-            </a>
-          </NavItem>
-
-          <GetStartedModal
-            title={"Add Account"}
-            showModal={showGetStartedModal}
-            handleClose={() => setShowGetStartedModal(false)}
-          />
-        </>
-      ) : (
-        <>
-          {isConnected ? (
+          {currentAccount.id > 0 ? (
             <>
               <NavItem>
-                <a href="#" onClick={()=>setShowSwitchAccount(true)}>Get Started</a>
+                <a href="#" onClick={() => setShowSwitchAccount(true)}>
+                  Switch Account
+                </a>
               </NavItem>
+              <NavItem>
+                <a href="#" onClick={() => setShowGetStartedModal(true)}>
+                  Add Account
+                </a>
+              </NavItem>
+
+              <GetStartedModal
+                title={"Add Account"}
+                showModal={showGetStartedModal}
+                handleClose={() => setShowGetStartedModal(false)}
+              />
             </>
           ) : (
             <>
-              <NavItem
-                onClick={() => {
-                  setShowConnectWalletModal(true)
-                }}
-              >
-                <a href="#">Connect</a>
+            <NavItem>
+                <a href="#" onClick={() => setShowSwitchAccount(true)}>
+                  Account Login
+                </a>
               </NavItem>
-              <ConnectWalletModal
-                    showModal={showConnectWalletModal}
-                    handleClose={() => setShowConnectWalletModal(false)}
-                  />
+              <NavItem>
+                <a href="#" onClick={() => setShowSwitchAccount(true)}>
+                  Get Started
+                </a>
+              </NavItem>
             </>
           )}
+        </>
+      ) : (
+        <>
+          <NavItem
+            onClick={() => {
+              setShowConnectWalletModal(true);
+            }}
+          >
+            <a href="#">Connect</a>
+          </NavItem>
+          <ConnectWalletModal
+            showModal={showConnectWalletModal}
+            handleClose={() => setShowConnectWalletModal(false)}
+          />
         </>
       )}
     </>
