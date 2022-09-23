@@ -14,10 +14,6 @@ const SidebarAuth = ({ currentAccount, setWeb3CurrentIDAction }) => {
   const [showGetStartedModal, setShowGetStartedModal] = useState(false);
   const [showSwitchAccount, setShowSwitchAccount] = useState(false);
 
-  const logout = () => {
-    setWeb3CurrentIDAction({});
-  };
-
   return (
     <>
       <SwitchAccountModal
