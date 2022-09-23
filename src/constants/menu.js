@@ -40,6 +40,11 @@ const data = [
         label: "menu.army.add-multiple-accounts",
         to: `${adminRoot}/account/add-multiple-accounts`,
       },
+      {
+        icon: "simple-icon-paper-plane",
+        label: "menu.army.change-wallet",
+        to: `${adminRoot}/account/change-wallet`,
+      },
     ],
   },
   {

@@ -17,25 +17,18 @@ import ConnectWalletModal from "./ConnectWalletModal";
 
 import { useAccount, useProvider, useWaitForTransaction } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
-import { sleep } from "helpers/sleeper";
 import { Colxx } from "components/common/CustomBootstrap";
 
-const AddMultipleAccount = ({ currentAccount }) => {
+const ChangeWallet = ({ currentAccount }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hash, setHash] = useState();
-  const [settingUplineID, setSettingUplineID] = useState(false);
   const [number, setNumber] = useState(1);
-  const [referralID, setReferralID] = useState("");
-  const [showConnectWalletModal, setShowConnectWalletModal] = useState();
-  const submitted = useRef(false);
   const { isConnected, address } = useAccount();
   const { premiumContract, systemContract, erc20Contract } = useBlockchain();
   const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
     confirmations: 1,
     hash,
   });
-
-  const provider = useProvider();
 
   useEffect(() => {
     window.systemContract = systemContract;
@@ -214,4 +207,4 @@ const mapStateToProps = ({ appData, authUser }) => {
 export default connect(mapStateToProps, {
   updateProfileAction: updateProfile,
   updateUserInfoAction: refreshUserInfo,
-})(AddMultipleAccount);
+})(ChangeWallet);

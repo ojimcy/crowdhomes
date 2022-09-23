@@ -19,6 +19,10 @@ const AddMultipleAccounts = React.lazy(() =>
   import(/* webpackChunkName: "account-how" */ "./add-multiple-accounts.js")
 );
 
+const ChangeWallet = React.lazy(() =>
+  import(/* webpackChunkName: "account-how" */ "./change-wallet.js")
+);
+
 const Account = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
@@ -42,6 +46,10 @@ const Account = ({ match }) => (
       <Route
         path={`${match.url}/add-multiple-accounts`}
         render={(props) => <AddMultipleAccounts {...props} />}
+      />
+      <Route
+        path={`${match.url}/change-wallet`}
+        render={(props) => <ChangeWallet {...props} />}
       />
       <Redirect to="/error" />
     </Switch>
