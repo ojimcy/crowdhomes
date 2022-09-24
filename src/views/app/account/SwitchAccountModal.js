@@ -65,7 +65,8 @@ const SwitchAccountModal = ({
         uplineID: parseInt(user.uplineID),
         referralsCount: parseInt(user.referralsCount),
         walletAddress: walletAddress,
-        totalEarnings: parseFloat(ethers.utils.formatEther(user.totalEarnings)).toFixed(2)
+        totalEarnings: parseFloat(ethers.utils.formatEther(user.totalEarnings)).toFixed(2),
+        role: 'user'
       };
 
       setWeb3CurrentIDAction(userData);

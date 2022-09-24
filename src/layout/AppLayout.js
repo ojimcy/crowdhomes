@@ -51,6 +51,7 @@ const AppLayout = ({
               totalEarnings: parseFloat(
                 ethers.utils.formatEther(user.totalEarnings)
               ).toFixed(2),
+              role: 'user'
             };
           }
         }

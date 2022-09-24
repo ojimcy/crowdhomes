@@ -17,6 +17,7 @@ import { injectIntl } from "react-intl";
 import { useAccount, useProvider } from "wagmi";
 import { Field } from "formik";
 import { NotificationManager } from "components/common/react-notifications";
+import LoginPrompt from "./LoginPrompt";
 
 const Referrals = ({ currentAccount }) => {
   const { premiumContract, erc20Contract } = useBlockchain();
@@ -89,7 +90,7 @@ const Referrals = ({ currentAccount }) => {
         address,
         premiumContract.address
       );
-      
+
       if (parseInt(allowance) === 0) {
         const totalSupply = await erc20Contract.totalSupply();
         let approvalTx = await erc20Contract.approve(
@@ -182,76 +183,81 @@ const Referrals = ({ currentAccount }) => {
                 )}
               </div>
             </CardHeader>
-            <CardBody className="table-border-style">
-              <p className="top-callout-text">
-                Invite friends and earn $10 for each recruitment
-                <Row>
-                  <Colxx md={6} xx={12}>
-                    <InputGroup className="mb-3 mt-2">
-                      <InputGroupAddon addonType="prepend">
-                        <Button outline color="secondary">
-                          Referral Link
-                        </Button>
-                      </InputGroupAddon>
+            {currentAccount.id > 0 ? (
+              <CardBody className="table-border-style">
+                <p className="top-callout-text">
+                  Invite friends and earn $10 for each recruitment
+                  <Row>
+                    <Colxx md={6} xx={12}>
+                      <InputGroup className="mb-3 mt-2">
+                        <InputGroupAddon addonType="prepend">
+                          <Button outline color="secondary">
+                            Referral Link
+                          </Button>
+                        </InputGroupAddon>
 
-                      <Input defaultValue={referralLink} />
+                        <Input defaultValue={referralLink} />
 
-                      <InputGroupAddon addonType="append">
-                        <Button
-                          outline
-                          color="secondary"
-                          onClick={copyReferralLink}
-                        >
-                          Copy Link
-                        </Button>
-                      </InputGroupAddon>
-                    </InputGroup>
-                  </Colxx>
-                </Row>
-              </p>
-              <div className="table-responsive">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Level</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {referrals.map((directReferral, i) => {
-                      return (
-                        <tr key={i}>
-                          <td>{directReferral.id}</td>
-                          <td>{directReferral.premiumLevel}</td>
-                          <td>
-                            {directReferral.premiumLevel > 0 ? (
-                              <a href={`/matrix?id=${directReferral.id}`}>
-                                View
-                              </a>
-                            ) : (
-                              ""
-                            )}
-                            {directReferral.premiumLevel === 0 ? (
-                              <Button className="default"
-                                onClick={() =>
-                                  upgradeDownline(directReferral.id, i)
-                                }
-                                color="secondary"
-                              >
-                                Upgrade to Premium
-                              </Button>
-                            ) : (
-                              ""
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </CardBody>
+                        <InputGroupAddon addonType="append">
+                          <Button
+                            outline
+                            color="secondary"
+                            onClick={copyReferralLink}
+                          >
+                            Copy Link
+                          </Button>
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </Colxx>
+                  </Row>
+                </p>
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Level</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {referrals.map((directReferral, i) => {
+                        return (
+                          <tr key={i}>
+                            <td>{directReferral.id}</td>
+                            <td>{directReferral.premiumLevel}</td>
+                            <td>
+                              {directReferral.premiumLevel > 0 ? (
+                                <a href={`/matrix?id=${directReferral.id}`}>
+                                  View
+                                </a>
+                              ) : (
+                                ""
+                              )}
+                              {directReferral.premiumLevel === 0 ? (
+                                <Button
+                                  className="default"
+                                  onClick={() =>
+                                    upgradeDownline(directReferral.id, i)
+                                  }
+                                  color="secondary"
+                                >
+                                  Upgrade to Premium
+                                </Button>
+                              ) : (
+                                ""
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </CardBody>
+            ) : (
+              <LoginPrompt />
+            )}
           </Card>
         </Colxx>
       </Row>

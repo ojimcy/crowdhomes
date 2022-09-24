@@ -109,6 +109,7 @@ const GetStartedModal = ({
           totalEarnings: parseFloat(
             ethers.utils.formatEther(user.totalEarnings)
           ).toFixed(2),
+          role: 'user'
         };
 
         setWeb3CurrentIDAction(userData);

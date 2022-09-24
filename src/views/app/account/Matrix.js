@@ -9,21 +9,27 @@ import { useAccount } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { BigNumber } from "ethers";
 import "./matrix.scss";
+import LoginPrompt from "./LoginPrompt";
 
 const Matrix = ({ currentAccount, match }) => {
   const { premiumContract } = useBlockchain();
   const { isConnected } = useAccount();
 
-  const [id, setId] = useState(currentAccount.id);
+  const [id, setId] = useState(0);
   const [level, setLevel] = useState(currentAccount.premiumLevel);
   const [rootNode, setRootNode] = useState(new MatrixNode());
   const [leftNode, setLeftNode] = useState(new MatrixNode());
   const [rightNode, setRightNode] = useState(new MatrixNode());
-
   const [user, setUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    if (!isConnected || !id || !premiumContract) return;
+    setId(currentAccount.id);
+    setIsLoggedIn(currentAccount.id > 0)
+  }, [currentAccount]);
+
+  useEffect(() => {
+    if (!isConnected || !(id > 0) || !premiumContract) return;
     const fn = async () => {
       try {
         const id_ = id || currentAccount.id;
@@ -45,7 +51,7 @@ const Matrix = ({ currentAccount, match }) => {
         await right.load(rNode.right.id, level_, 1, premiumContract);
         setRightNode(right);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
     fn();
@@ -65,162 +71,166 @@ const Matrix = ({ currentAccount, match }) => {
         </Colxx>
       </Row>
 
-      <Row>
-        <Colxx md={12}>
-          <div className="card matrix">
-            <div className="card-header">
-              <h5>
-                Matrix
-                {level === "1" ? (
-                  <small>
-                    <a
-                      onClick={() => {
-                        setLevel(user.premiumLevel);
-                      }}
-                      href="#"
-                    >
-                      {" "}
-                      Current Level
-                    </a>
-                  </small>
-                ) : (
-                  <small>
-                    <a
-                      href="#"
-                      onClick={() => {
-                        setLevel(1);
-                      }}
-                    >
-                      {" "}
-                      Base Matrix
-                    </a>
-                  </small>
-                )}
-              </h5>
-            </div>
-            {rootNode.loaded ? (
-              <div className="card-body table-border-style tree">
-                <div className="container">
-                  <h1 className="level-1 rectangle">
-                    <a
-                      href="#"
-                      onClick={() => to(rootNode.id, rootNode.level)}
-                      className="text-white"
-                    >
-                      {rootNode.id}
-                      <span>({parseInt(user.premiumLevel)})</span>{" "}
-                    </a>
-                  </h1>
-                  <ol className="level-2-wrapper">
-                    <li>
-                      <h2 className="level-2 rectangle">
-                        {rootNode.left.id === 0 ? (
-                          <span className="text-white">Empty</span>
-                        ) : (
-                          <a
-                            href="#"
-                            onClick={() => to(rootNode.left.id, level)}
-                            className="text-white"
-                          >
-                            {rootNode.left.id}
-                            <span>({rootNode.left.level})</span>
-                          </a>
-                        )}
-                      </h2>
-                      <ol className="level-3-wrapper">
-                        <li>
-                          <h2 className="level-3 rectangle">
-                            {leftNode.left.id === 0 ? (
-                              <span className="text-white">Empty</span>
-                            ) : (
-                              <a
-                                href="#"
-                                onClick={() => to(leftNode.left.id, level)}
-                                className="text-white"
-                              >
-                                {leftNode.left.id}
-                                <span>({leftNode.left.level})</span>
-                              </a>
-                            )}
-                          </h2>
-                        </li>
-                        <li>
-                          <h2 className="level-3 rectangle">
-                            {leftNode.right.id === 0 ? (
-                              <span className="text-white">Empty</span>
-                            ) : (
-                              <a
-                                href="#"
-                                onClick={() => to(leftNode.right.id, level)}
-                                className="text-white"
-                              >
-                                {leftNode.right.id}
-                                <span>({leftNode.right.level})</span>
-                              </a>
-                            )}
-                          </h2>
-                        </li>
-                      </ol>
-                    </li>
-                    <li>
-                      <h2 className="level-2 rectangle">
-                        {rootNode.right.id === 0 ? (
-                          <span className="text-white">Empty</span>
-                        ) : (
-                          <a
-                            href="#"
-                            onClick={() => to(rootNode.right.id, level)}
-                            className="text-white"
-                          >
-                            {rootNode.right.id}
-                            <span>({rootNode.right.level})</span>
-                          </a>
-                        )}
-                      </h2>
-                      <ol className="level-3-wrapper">
-                        <li>
-                          <h3 className="level-3 rectangle">
-                            {rightNode.left.id === 0 ? (
-                              <span className="text-white">Empty</span>
-                            ) : (
-                              <a
-                                href="#"
-                                onClick={() => to(rightNode.left.id, level)}
-                                className="text-white"
-                              >
-                                {rightNode.left.id}
-                                <span>({rightNode.left.level})</span>
-                              </a>
-                            )}
-                          </h3>
-                        </li>
-                        <li>
-                          <h3 className="level-3 rectangle">
-                            {rightNode.right.id === 0 ? (
-                              <span className="text-white">Empty</span>
-                            ) : (
-                              <a
-                                href="#"
-                                onClick={() => to(rightNode.right.id, level)}
-                                className="text-white"
-                              >
-                                {rightNode.right.id}
-                                <span>({rightNode.right.level})</span>
-                              </a>
-                            )}
-                          </h3>
-                        </li>
-                      </ol>
-                    </li>
-                  </ol>
-                </div>
+      {isLoggedIn ? (
+        <Row>
+          <Colxx md={12}>
+            <div className="card matrix">
+              <div className="card-header">
+                <h5>
+                  Matrix
+                  {level === "1" ? (
+                    <small>
+                      <a
+                        onClick={() => {
+                          setLevel(user.premiumLevel);
+                        }}
+                        href="#"
+                      >
+                        {" "}
+                        Current Level
+                      </a>
+                    </small>
+                  ) : (
+                    <small>
+                      <a
+                        href="#"
+                        onClick={() => {
+                          setLevel(1);
+                        }}
+                      >
+                        {" "}
+                        Base Matrix
+                      </a>
+                    </small>
+                  )}
+                </h5>
               </div>
-            ) : (
-              ""
-            )}
-          </div>
-        </Colxx>
-      </Row>
+              {rootNode.loaded ? (
+                <div className="card-body table-border-style tree">
+                  <div className="container">
+                    <h1 className="level-1 rectangle">
+                      <a
+                        href="#"
+                        onClick={() => to(rootNode.id, rootNode.level)}
+                        className="text-white"
+                      >
+                        {rootNode.id}
+                        <span>({parseInt(user.premiumLevel)})</span>{" "}
+                      </a>
+                    </h1>
+                    <ol className="level-2-wrapper">
+                      <li>
+                        <h2 className="level-2 rectangle">
+                          {rootNode.left.id === 0 ? (
+                            <span className="text-white">Empty</span>
+                          ) : (
+                            <a
+                              href="#"
+                              onClick={() => to(rootNode.left.id, level)}
+                              className="text-white"
+                            >
+                              {rootNode.left.id}
+                              <span>({rootNode.left.level})</span>
+                            </a>
+                          )}
+                        </h2>
+                        <ol className="level-3-wrapper">
+                          <li>
+                            <h2 className="level-3 rectangle">
+                              {leftNode.left.id === 0 ? (
+                                <span className="text-white">Empty</span>
+                              ) : (
+                                <a
+                                  href="#"
+                                  onClick={() => to(leftNode.left.id, level)}
+                                  className="text-white"
+                                >
+                                  {leftNode.left.id}
+                                  <span>({leftNode.left.level})</span>
+                                </a>
+                              )}
+                            </h2>
+                          </li>
+                          <li>
+                            <h2 className="level-3 rectangle">
+                              {leftNode.right.id === 0 ? (
+                                <span className="text-white">Empty</span>
+                              ) : (
+                                <a
+                                  href="#"
+                                  onClick={() => to(leftNode.right.id, level)}
+                                  className="text-white"
+                                >
+                                  {leftNode.right.id}
+                                  <span>({leftNode.right.level})</span>
+                                </a>
+                              )}
+                            </h2>
+                          </li>
+                        </ol>
+                      </li>
+                      <li>
+                        <h2 className="level-2 rectangle">
+                          {rootNode.right.id === 0 ? (
+                            <span className="text-white">Empty</span>
+                          ) : (
+                            <a
+                              href="#"
+                              onClick={() => to(rootNode.right.id, level)}
+                              className="text-white"
+                            >
+                              {rootNode.right.id}
+                              <span>({rootNode.right.level})</span>
+                            </a>
+                          )}
+                        </h2>
+                        <ol className="level-3-wrapper">
+                          <li>
+                            <h3 className="level-3 rectangle">
+                              {rightNode.left.id === 0 ? (
+                                <span className="text-white">Empty</span>
+                              ) : (
+                                <a
+                                  href="#"
+                                  onClick={() => to(rightNode.left.id, level)}
+                                  className="text-white"
+                                >
+                                  {rightNode.left.id}
+                                  <span>({rightNode.left.level})</span>
+                                </a>
+                              )}
+                            </h3>
+                          </li>
+                          <li>
+                            <h3 className="level-3 rectangle">
+                              {rightNode.right.id === 0 ? (
+                                <span className="text-white">Empty</span>
+                              ) : (
+                                <a
+                                  href="#"
+                                  onClick={() => to(rightNode.right.id, level)}
+                                  className="text-white"
+                                >
+                                  {rightNode.right.id}
+                                  <span>({rightNode.right.level})</span>
+                                </a>
+                              )}
+                            </h3>
+                          </li>
+                        </ol>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+          </Colxx>
+        </Row>
+      ) : (
+        <LoginPrompt />
+      )}
     </>
   );
 };
