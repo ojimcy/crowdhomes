@@ -78,7 +78,6 @@ const SwitchAccountModal = ({
         ""
       );
       handleClose();
-      return;
     } else {
       NotificationManager.warning(
         "Invalid User ID",
