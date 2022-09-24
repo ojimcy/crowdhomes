@@ -43,6 +43,8 @@ module.exports = {
   'menu.army.how-it-works': 'How it Works',
   'menu.army.referrals': 'Referrals',
   'menu.army.matrix': 'Matrix',
+  'menu.army.add-multiple-accounts': 'Add Multiple Accounts',
+  'menu.army.change-wallet': 'Change Wallet',
   'menu.matrix': 'Matrix',
   'menu.staking': 'DFC Staking',
   'menu.army.profile': 'Profile',

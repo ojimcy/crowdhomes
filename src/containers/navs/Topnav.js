@@ -92,7 +92,7 @@ const TopNav = ({
       <div className="navbar-right">
         <div className="user d-inline-block">
           <UncontrolledDropdown className="dropdown-menu-right">
-            <DropdownToggle className="p-0">
+            <DropdownToggle className="p-0" color="white">
               <span className="name mr-1">
                 {isConnected ? (
                   <>

@@ -37,6 +37,19 @@ const data = [
         to: `${adminRoot}/account`,
         roles: ["user"],
       },
+
+      {
+        icon: "simple-icon-paper-plane",
+        label: "menu.army.add-multiple-accounts",
+        to: `${adminRoot}/account/add-multiple-accounts`,
+        roles: ["user"],
+      },
+      {
+        icon: "simple-icon-paper-plane",
+        label: "menu.army.change-wallet",
+        to: `${adminRoot}/account/change-wallet`,
+        roles: ["user"],
+      },
     ],
   },
   {
