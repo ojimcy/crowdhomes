@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { setWeb3CurrentID } from "redux/auth/actions";
 import useBlockchain from "blockchain/useBlockchain";
 import { ethers } from "ethers";
+import { useNetwork, useSwitchNetwork } from "wagmi";
 
 const SwitchAccountModal = ({
   showModal,
@@ -23,8 +24,9 @@ const SwitchAccountModal = ({
   currentAccount,
 }) => {
   const submitted = useRef(false);
-  const { premiumContract } = useBlockchain();
+  const { correctNetwork, premiumContract } = useBlockchain();
   const [loading, setLoading] = useState(false);
+  const { switchNetwork } = useSwitchNetwork();
 
   useEffect(() => {
     if (!submitted.current) return;
@@ -42,6 +44,13 @@ const SwitchAccountModal = ({
   });
 
   const login = async (values) => {
+    if (
+      !correctNetwork
+    ) {
+      NotificationManager.error("Please connect to BSC network to continue");
+      switchNetwork(56)
+      return;
+    }
     if (values.accountID <= 0) {
       NotificationManager.warning(
         "Invalid User ID",
@@ -55,7 +64,9 @@ const SwitchAccountModal = ({
     setLoading(true);
     const user = await premiumContract.getUser(values.accountID);
     if (user.registered) {
-      const walletAddress = await premiumContract.userAddresses(values.accountID);
+      const walletAddress = await premiumContract.userAddresses(
+        values.accountID
+      );
 
       const userData = {
         id: values.accountID,
@@ -65,8 +76,10 @@ const SwitchAccountModal = ({
         uplineID: parseInt(user.uplineID),
         referralsCount: parseInt(user.referralsCount),
         walletAddress: walletAddress,
-        totalEarnings: parseFloat(ethers.utils.formatEther(user.totalEarnings)).toFixed(2),
-        role: 'user'
+        totalEarnings: parseFloat(
+          ethers.utils.formatEther(user.totalEarnings)
+        ).toFixed(2),
+        role: "user",
       };
 
       setWeb3CurrentIDAction(userData);
@@ -92,7 +105,7 @@ const SwitchAccountModal = ({
     setLoading(false);
   };
   const initialValues = {
-    accountID: currentAccount.id || '',
+    accountID: currentAccount.id || "",
   };
   return (
     <Modal isOpen={showModal} toggle={handleClose}>

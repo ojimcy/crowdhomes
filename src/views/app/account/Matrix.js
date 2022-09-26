@@ -12,7 +12,7 @@ import "./matrix.scss";
 import LoginPrompt from "./LoginPrompt";
 
 const Matrix = ({ currentAccount, match }) => {
-  const { premiumContract } = useBlockchain();
+  const { correctNetwork, premiumContract } = useBlockchain();
   const { isConnected } = useAccount();
 
   const [id, setId] = useState(0);
@@ -29,7 +29,7 @@ const Matrix = ({ currentAccount, match }) => {
   }, [currentAccount]);
 
   useEffect(() => {
-    if (!isConnected || !(id > 0) || !premiumContract) return;
+    if (!isConnected || !(id > 0) || !premiumContract || !correctNetwork) return;
     const fn = async () => {
       try {
         const id_ = id || currentAccount.id;

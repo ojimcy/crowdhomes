@@ -20,7 +20,7 @@ import { NotificationManager } from "components/common/react-notifications";
 import LoginPrompt from "./LoginPrompt";
 
 const Referrals = ({ currentAccount }) => {
-  const { premiumContract, erc20Contract } = useBlockchain();
+  const { correctNetwork, premiumContract, erc20Contract } = useBlockchain();
   const { isConnected, address } = useAccount();
   const [referrals, setReferrals] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +31,7 @@ const Referrals = ({ currentAccount }) => {
   const [referralLink, setReferralLink] = useState("");
 
   useEffect(() => {
-    if (!isConnected) return;
+    if (!isConnected || !correctNetwork) return;
     const accountID = currentAccount.id;
     const fn = async () => {
       try {

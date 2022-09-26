@@ -3,9 +3,17 @@ import erc20Abi from "./abi/erc20";
 import teamAbi from "./abi/team";
 import farmAbi from "./abi/farm";
 import { dfc, premium, system } from "./contracts";
-import { useContract, useSigner } from "wagmi";
+import { useAccount, useContract, useNetwork, useSigner } from "wagmi";
 
 const useBlockchain = () => {
+  const { isConnected } = useAccount();
+  const network = useNetwork();
+  let correctNetwork = {}
+  if (isConnected && network && network.chain) {
+    correctNetwork = [56, 97].indexOf(parseInt(network.chain.id)) > -1;
+  }
+  
+
   const { data: signerData } = useSigner();
   const premiumContract = useContract({
     addressOrName: premium,
@@ -38,6 +46,7 @@ const useBlockchain = () => {
   });
 
   return {
+    correctNetwork,
     premiumContract,
     erc20Contract,
     systemContract,

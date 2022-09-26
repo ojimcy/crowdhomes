@@ -20,7 +20,7 @@ const AppLayout = ({
   setWeb3CurrentIDAction,
 }) => {
   const { address, isConnected } = useAccount();
-  const { premiumContract } = useBlockchain();
+  const { correctNetwork, premiumContract } = useBlockchain();
 
   useEffect(() => {
     if (error) {
@@ -29,7 +29,7 @@ const AppLayout = ({
   }, [error]);
 
   useEffect(() => {
-    if (!(premiumContract && premiumContract.provider && isConnected)) return;
+    if (!(premiumContract && premiumContract.provider && isConnected && correctNetwork)) return;
     if (currentAccount && currentAccount.registered) return;
     const fn = async () => {
       try {

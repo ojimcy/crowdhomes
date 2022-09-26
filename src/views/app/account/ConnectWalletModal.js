@@ -23,11 +23,14 @@ const ConnectWalletModal = ({ showModal, handleClose }) => {
         <Row>
           {connectors.map((connector) => (
             <Colxx md="12" key={connector.id}>
-              <Button className="m-2 btn-block"
+              <Button
+                className="m-2 btn-block"
                 disabled={!connector.ready}
                 onClick={() => connect({ connector })}
               >
-                {connector.name}
+                {connector.name === "Injected"
+                  ? "TrustWallet/Injected"
+                  : connector.name}
                 {!connector.ready && " (unsupported)"}
                 {isLoading &&
                   connector.id === pendingConnector?.id &&

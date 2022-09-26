@@ -37,45 +37,12 @@ const AddMultipleAccount = ({ currentAccount }) => {
 
   const provider = useProvider();
 
-  useEffect(() => {
-    window.systemContract = systemContract;
-    window.premiumContract = premiumContract;
-  }, [systemContract, premiumContract]);
-
-  useEffect(() => {
-    if (!isConnected || !erc20Contract) return;
-    const fn = async () => {
-      window.systemContract = systemContract;
-      window.premiumContract = premiumContract;
-    };
-    fn();
-  }, [erc20Contract]);
-
-  useEffect(() => {
-    if (txSuccess) {
-      setIsLoading(false);
-      NotificationManager.warning(
-        "Account created. Congratulations",
-        "Notice",
-        3000,
-        null,
-        null,
-        ""
-      );
-    }
-  }, [txSuccess]);
-
-  useEffect(() => {
-    if (txError) {
-      setIsLoading(false);
-      NotificationManager.warning(txError, "Notice", 3000, null, null, "");
-    }
-  }, [txError]);
 
   const initialValues = {
     referralID: currentAccount.id || 1,
     uplineID: currentAccount.id || 1,
     withdrawalAddress: currentAccount.walletAddress || address,
+    number: 1,
   };
   return (
     <Row>
@@ -107,9 +74,8 @@ const AddMultipleAccount = ({ currentAccount }) => {
                     <Label>Number of Accounts</Label>
                     <Field
                       className="form-control"
-                      value={number}
-                      onChange={(e) => setNumber(e.target.value)}
                       type="number"
+                      name="number"
                       placeholder="Number of Accounts"
                     />
                     {errors.uplineID && touched.uplineID && (
@@ -124,9 +90,7 @@ const AddMultipleAccount = ({ currentAccount }) => {
                     <Field
                       className="form-control"
                       name="referralID"
-                      onChange={(e) => setSettingUplineID(e.target.value)}
                       type="text"
-                      value={referralID}
                     />
                     {errors.referralID && touched.referralID && (
                       <div className="invalid-feedback d-block">
@@ -138,8 +102,6 @@ const AddMultipleAccount = ({ currentAccount }) => {
                   <FormGroup className="text-left">
                     <Field
                       custom
-                      value={settingUplineID}
-                      onChange={(el) => setSettingUplineID(el.target.checked)}
                       type="checkbox"
                       id="supported-checkbox"
                       label={"Set Matrix Upline ID"}
@@ -149,6 +111,7 @@ const AddMultipleAccount = ({ currentAccount }) => {
                     <Form.Group id="formBasicPassword">
                       <Form.Label>Matrix Upline ID</Form.Label>
                       <Form.Control
+                      name
                         value={uplineID}
                         onChange={(el) => setSettingUplineID(el.target.value)}
                         type="text"

@@ -22,7 +22,6 @@ const StakingModal = ({
   handleClose,
   title,
   currentAccount,
-  packages,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hash, setHash] = useState();

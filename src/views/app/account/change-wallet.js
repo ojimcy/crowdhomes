@@ -8,6 +8,7 @@ import {
   Card,
   CardBody,
   Row,
+  CustomInput,
 } from "reactstrap";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
@@ -21,54 +22,25 @@ import { Colxx } from "components/common/CustomBootstrap";
 
 const ChangeWallet = ({ currentAccount }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [hash, setHash] = useState();
-  const [number, setNumber] = useState(1);
+  const [showConnectWalletModal, setShowConnectWalletModal] = useState(false);
   const { isConnected, address } = useAccount();
   const { premiumContract, systemContract, erc20Contract } = useBlockchain();
-  const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
-    confirmations: 1,
-    hash,
-  });
+  const provider = useProvider()
 
-  useEffect(() => {
-    window.systemContract = systemContract;
-    window.premiumContract = premiumContract;
-  }, [systemContract, premiumContract]);
-
-  useEffect(() => {
-    if (!isConnected || !erc20Contract) return;
-    const fn = async () => {
-      window.systemContract = systemContract;
-      window.premiumContract = premiumContract;
-    };
-    fn();
-  }, [erc20Contract]);
-
-  useEffect(() => {
-    if (txSuccess) {
-      setIsLoading(false);
-      NotificationManager.warning(
-        "Account created. Congratulations",
-        "Notice",
-        3000,
-        null,
-        null,
-        ""
-      );
+  const changeWallet = async (values) => {
+    let tx = await premiumContract.changeWallet(currentAccount.id, values.walletAddress)
+    let receipt = await provider.waitForTransaction(tx.hash, 1, 45000)
+    if (!receipt || !receipt.blockNumber) {
+      NotificationManager.error('Unable to determine transaction status', 5000)
+      return
     }
-  }, [txSuccess]);
 
-  useEffect(() => {
-    if (txError) {
-      setIsLoading(false);
-      NotificationManager.warning(txError, "Notice", 3000, null, null, "");
-    }
-  }, [txError]);
+    NotificationManager.success('Wallet changed', 5000)
+  }
 
   const initialValues = {
-    referralID: currentAccount.id || 1,
-    uplineID: currentAccount.id || 1,
     withdrawalAddress: currentAccount.walletAddress || address,
+    newWallet: "",
   };
   return (
     <Row>
@@ -78,10 +50,19 @@ const ChangeWallet = ({ currentAccount }) => {
             <h6 className="top-callout">Add Multiple Accounts</h6>
           </CardHeader>
 
-          <Formik initialValues={initialValues}>
+          <Formik initialValues={initialValues} onSubmit={changeWallet}>
             {({ errors, touched }) => (
               <Form className="av-tooltip tooltip-label-bottom">
                 <CardBody>
+                  <FormGroup className="form-group has-float-label">
+                    <Label>Current Wallet Address</Label>
+                    <CustomInput
+                      type="text"
+                      className="form-control"
+                      defaultValue={currentAccount.walletAddress}
+                    />
+                  </FormGroup>
+
                   <FormGroup className="form-group has-float-label">
                     <Label>Wallet Address</Label>
                     <Field
@@ -95,62 +76,8 @@ const ChangeWallet = ({ currentAccount }) => {
                       </div>
                     )}
                   </FormGroup>
-
-                  <FormGroup className="form-group has-float-label">
-                    <Label>Number of Accounts</Label>
-                    <Field
-                      className="form-control"
-                      value={number}
-                      onChange={(e) => setNumber(e.target.value)}
-                      type="number"
-                      placeholder="Number of Accounts"
-                    />
-                    {errors.uplineID && touched.uplineID && (
-                      <div className="invalid-feedback d-block">
-                        {errors.uplineID}
-                      </div>
-                    )}
-                  </FormGroup>
-
-                  <FormGroup className="form-group has-float-label">
-                    <Label>Referral ID</Label>
-                    <Field
-                      className="form-control"
-                      name="referralID"
-                      onChange={(e) => setSettingUplineID(e.target.value)}
-                      type="text"
-                      value={referralID}
-                    />
-                    {errors.referralID && touched.referralID && (
-                      <div className="invalid-feedback d-block">
-                        {errors.referralID}
-                      </div>
-                    )}
-                  </FormGroup>
-
-                  <FormGroup className="text-left">
-                    <Field
-                      custom
-                      value={settingUplineID}
-                      onChange={(el) => setSettingUplineID(el.target.checked)}
-                      type="checkbox"
-                      id="supported-checkbox"
-                      label={"Set Matrix Upline ID"}
-                    />
-                  </FormGroup>
-                  {settingUplineID ? (
-                    <Form.Group id="formBasicPassword">
-                      <Form.Label>Matrix Upline ID</Form.Label>
-                      <Form.Control
-                        value={uplineID}
-                        onChange={(el) => setSettingUplineID(el.target.value)}
-                        type="text"
-                      />
-                    </Form.Group>
-                  ) : (
-                    ""
-                  )}
                 </CardBody>
+
                 <CardFooter>
                   {isConnected ? (
                     <Button
@@ -202,7 +129,6 @@ const mapStateToProps = ({ appData, authUser }) => {
     currentAccount,
   };
 };
-
 
 export default connect(mapStateToProps, {
   updateProfileAction: updateProfile,

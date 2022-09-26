@@ -32,7 +32,7 @@ const GetStartedModal = ({
   const [settingUplineID, setSettingUplineID] = useState(false);
   const submitted = useRef(false);
   const { address } = useAccount();
-  const { premiumContract, systemContract } = useBlockchain();
+  const { correctNetwork, premiumContract, systemContract } = useBlockchain();
   const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
     confirmations: 1,
     hash,
@@ -68,6 +68,13 @@ const GetStartedModal = ({
 
   const register = async (values) => {
     try {
+      if (
+        !correctNetwork
+      ) {
+        NotificationManager.error("Please connect to BSC network to continue");
+        switchNetwork(56)
+        return;
+      }
       setIsLoading(true);
       submitted.current = true;
 

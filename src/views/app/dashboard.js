@@ -14,7 +14,7 @@ import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
 import GetStartedModal from "./account/GetStartedModal";
 import ConnectWalletModal from "./account/ConnectWalletModal";
-import { useAccount, useProvider } from "wagmi";
+import { useAccount, useNetwork, useProvider } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import { NotificationManager } from "components/common/react-notifications";
 import JoinArmyModal from "./account/JoinArmyModal";
@@ -25,10 +25,12 @@ const Dashboard = ({ match, currentAccount, history }) => {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [joinArmyModalIsOpened, setJoinArmyModalIsOpened] = useState(false);
   const { isConnected, address } = useAccount();
-  const { premiumContract, systemContract, erc20Contract, teamContract, farmContract } =
+  const { correctNetwork, premiumContract, systemContract, erc20Contract, teamContract, farmContract } =
     useBlockchain();
   const [dfcBalance, setDfcBalance] = useState(0);
   const provider = useProvider();
+
+  const network = useNetwork();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -40,13 +42,14 @@ const Dashboard = ({ match, currentAccount, history }) => {
   }, [isConnected]);
 
   useEffect(() => {
-    if (!isConnected || !erc20Contract) return;
+    if (!isConnected || !erc20Contract || !correctNetwork) return;
     const fn = async () => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
       window.teamContract = teamContract;
       window.farmContract = farmContract;
       window.provider = provider;
+      window.network = network;
 
       try {
         const dfcBalance = await erc20Contract.balanceOf(address);
@@ -56,7 +59,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
       }
     };
     fn();
-  }, [erc20Contract]);
+  }, [erc20Contract, correctNetwork]);
 
   const joinDFCArmy = async () => {
     try {
