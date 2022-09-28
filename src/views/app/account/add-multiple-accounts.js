@@ -22,21 +22,11 @@ import { Colxx } from "components/common/CustomBootstrap";
 
 const AddMultipleAccount = ({ currentAccount }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [hash, setHash] = useState();
   const [settingUplineID, setSettingUplineID] = useState(false);
   const [number, setNumber] = useState(1);
-  const [referralID, setReferralID] = useState("");
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const submitted = useRef(false);
   const { isConnected, address } = useAccount();
-  const { premiumContract, systemContract, erc20Contract } = useBlockchain();
-  const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
-    confirmations: 1,
-    hash,
-  });
-
-  const provider = useProvider();
-
 
   const initialValues = {
     referralID: currentAccount.id || 1,

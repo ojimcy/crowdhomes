@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { setWeb3CurrentID } from "redux/auth/actions";
 import useBlockchain from "blockchain/useBlockchain";
 import { ethers } from "ethers";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 const SwitchAccountModal = ({
   showModal,
@@ -27,6 +27,7 @@ const SwitchAccountModal = ({
   const { correctNetwork, premiumContract } = useBlockchain();
   const [loading, setLoading] = useState(false);
   const { switchNetwork } = useSwitchNetwork();
+  const {disconnectAsync} = useDisconnect()
 
   useEffect(() => {
     if (!submitted.current) return;
@@ -48,6 +49,7 @@ const SwitchAccountModal = ({
       !correctNetwork
     ) {
       NotificationManager.error("Please connect to BSC network to continue");
+      await disconnectAsync()
       switchNetwork(56)
       return;
     }

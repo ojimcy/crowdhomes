@@ -50,6 +50,21 @@ const StakingCard = ({
         return;
       }
 
+      const allowance = await erc20Contract.allowance(
+        address,
+        premiumContract.address
+      );
+
+      if (parseInt(allowance) === 0) {
+        const totalSupply = await erc20Contract.totalSupply();
+        let approvalTx = await erc20Contract.approve(
+          premiumContract.address,
+          totalSupply
+        );
+        console.log(approvalTx);
+        await provider.waitForTransaction(approvalTx.hash, 1, 45000);
+      }
+
       const tx = await farmContract.stake(
         currentAccount.id,
         ethers.utils.parseEther(stakingAmount.toString()),

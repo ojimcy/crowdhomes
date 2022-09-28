@@ -11,9 +11,8 @@ import {
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { refreshUserInfo, updateProfile } from "redux/actions";
-import { NotificationManager } from "components/common/react-notifications";
 
-import { useAccount, useProvider, useWaitForTransaction } from "wagmi";
+import { useAccount } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 
 
@@ -22,17 +21,11 @@ const StakingModal = ({
   handleClose,
   title,
   currentAccount,
-  packages,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [hash, setHash] = useState();
   const submitted = useRef(false);
   const { isConnected, address } = useAccount();
   const { premiumContract, systemContract, erc20Contract } = useBlockchain();
-  const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
-    confirmations: 1,
-    hash,
-  });
 
   const [dfcBalance, setDfcBalance] = useState(0);
 
@@ -40,27 +33,6 @@ const StakingModal = ({
     window.systemContract = systemContract;
     window.premiumContract = premiumContract;
   }, [systemContract, premiumContract]);
-
-  useEffect(() => {
-    if (txSuccess) {
-      setIsLoading(false);
-      NotificationManager.warning(
-        "Account created. Congratulations",
-        "Notice",
-        3000,
-        null,
-        null,
-        ""
-      );
-    }
-  }, [txSuccess]);
-
-  useEffect(() => {
-    if (txError) {
-      setIsLoading(false);
-      NotificationManager.warning(txError, "Notice", 3000, null, null, "");
-    }
-  }, [txError]);
 
   useEffect(() => {
     if (!isConnected || !erc20Contract) return;

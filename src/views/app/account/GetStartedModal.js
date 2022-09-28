@@ -14,9 +14,8 @@ import { connect } from "react-redux";
 import { refreshUserInfo, updateProfile } from "redux/actions";
 import { NotificationManager } from "components/common/react-notifications";
 
-import { useAccount, useProvider, useWaitForTransaction } from "wagmi";
+import { useAccount, useDisconnect, useProvider } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
-import { sleep } from "helpers/sleeper";
 import { setWeb3CurrentID } from "redux/auth/actions";
 import { ethers } from "ethers";
 
@@ -28,15 +27,11 @@ const GetStartedModal = ({
   setWeb3CurrentIDAction,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [hash, setHash] = useState();
   const [settingUplineID, setSettingUplineID] = useState(false);
   const submitted = useRef(false);
   const { address } = useAccount();
   const { correctNetwork, premiumContract, systemContract } = useBlockchain();
-  const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
-    confirmations: 1,
-    hash,
-  });
+  const { disconnect } = useDisconnect();
 
   const provider = useProvider();
 
@@ -45,33 +40,13 @@ const GetStartedModal = ({
     window.premiumContract = premiumContract;
   }, [systemContract, premiumContract]);
 
-  useEffect(() => {
-    if (txSuccess) {
-      setIsLoading(false);
-      NotificationManager.warning(
-        "Account created. Congratulations",
-        "Notice",
-        7000,
-        null,
-        null,
-        ""
-      );
-    }
-  }, [txSuccess]);
-
-  useEffect(() => {
-    if (txError) {
-      setIsLoading(false);
-      NotificationManager.warning(txError, "Notice", 3000, null, null, "");
-    }
-  }, [txError]);
-
   const register = async (values) => {
     try {
       if (
         !correctNetwork
       ) {
         NotificationManager.error("Please connect to BSC network to continue");
+        disconnect()
         switchNetwork(56)
         return;
       }
