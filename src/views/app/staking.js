@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
-import { Button, Card, CardBody, Row, Table } from "reactstrap";
+import { Row, Table } from "reactstrap";
 import { Colxx, Separator } from "components/common/CustomBootstrap";
 import Breadcrumb from "containers/navs/Breadcrumb";
-import StakingModal from "./StakingModal";
-import ConnectWalletModal from "./account/ConnectWalletModal";
 import { useAccount } from "wagmi";
 import useBlockchain from "blockchain/useBlockchain";
 import StakingCard from "./staking/StakingCard";
@@ -18,18 +16,17 @@ import {
   SILVER_DFC_POOL,
   SILVER_USDT_POOL,
 } from "blockchain/contracts";
-import { formatEther } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
 
 const Staking = ({ match, currentAccount, history }) => {
   const { isConnected } = useAccount();
-  const { premiumContract, systemContract, erc20Contract, farmContract } = useBlockchain();
+  const { premiumContract, systemContract, erc20Contract, farmContract, correctNetwork } = useBlockchain();
   const [stakes, setStakes] = useState([])
 
   let allStakes = []
 
   useEffect(() => {
-    if (!isConnected || !erc20Contract) return;
+    if (!isConnected || !erc20Contract || !correctNetwork) return;
     const fn = async () => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
@@ -69,7 +66,11 @@ const Staking = ({ match, currentAccount, history }) => {
       }
     }
 
-    fn();
+    try {
+      fn();
+    } catch (error) {
+      console.error(error)
+    }
   }, [erc20Contract]);
 
   return (
@@ -135,7 +136,7 @@ const Staking = ({ match, currentAccount, history }) => {
           <tbody>
           {
             stakes.map((stake, i) => {
-              return <tr>
+              return <tr key={i}>
                 <td>{i+1}</td>
                 <td>{stake.preservationMode}</td>
                 <td>{stake.amount}</td>

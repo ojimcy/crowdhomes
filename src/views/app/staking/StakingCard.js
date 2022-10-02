@@ -82,6 +82,7 @@ const StakingCard = ({
 
       NotificationManager.success("Transaction succeeded", "", 5000);
     } catch (error) {
+      console.error(error)
       NotificationManager.warning("Transaction failed", "", 3000);
       setLoading(false)
     }
@@ -114,7 +115,7 @@ const StakingCard = ({
 
                     <Input
                       value={stakingAmount}
-                      onChange={(e) => setStakingAmount(e.value)}
+                      onChange={(e) => setStakingAmount(e.target.value)}
                     />
 
                     <InputGroupAddon addonType="append">
