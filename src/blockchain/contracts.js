@@ -15,3 +15,5 @@ export const GOLD_DFC_POOL = 6; // farmType: 1
 
 export const USDT_FARM = 0; // farmType: 0
 export const DFC_FARM = 1; // farmType: 1
+
+export const DEFIPAY_POOL = 7; // farmType: 1

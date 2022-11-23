@@ -65,6 +65,7 @@ const StakingModal = ({
     if (!isConnected || !erc20Contract) return;
     const fn = async () => {
       window.systemContract = systemContract;
+      window.erc20Contract = erc20Contract;
       window.premiumContract = premiumContract;
       try {
         const dfcBalance = await erc20Contract.balanceOf(address);

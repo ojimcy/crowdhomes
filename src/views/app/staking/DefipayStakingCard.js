@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAccount, useProvider } from "wagmi";
 import ConnectWalletModal from "../account/ConnectWalletModal";
 import {
@@ -17,58 +17,35 @@ import useBlockchain from "blockchain/useBlockchain";
 import { ethers } from "ethers";
 import { NotificationManager } from "components/common/react-notifications";
 
-const StakingCard = ({
-  pkg,
-  currentAccount,
-  interestRate,
-  maturityPeriod,
-  usdtPool,
-  dfcPool,
-}) => {
-  const [stakingAmount, setStakingAmount] = useState(100);
+const DefipayStakingCard = ({ currentAccount }) => {
+  const [stakingAmount, setStakingAmount] = useState(5);
   const [investmentMode, setInvestmentMode] = useState(1);
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showStakingModal, setShowStakingModal] = useState(false);
-  const { isConnected, address } = useAccount();
-  const { premiumContract, erc20Contract, farmContract } = useBlockchain();
+  const { isConnected } = useAccount();
+  const { defipayPoolContract } = useBlockchain();
   const [loading, setLoading] = useState(false);
   const provider = useProvider();
+
+  useEffect(() => {
+    window.defipayPoolContract = defipayPoolContract;
+  });
 
   const takeMaxAmount = () => {};
 
   const stake = async () => {
     setLoading(true);
     try {
-      let poolID = investmentMode === 1 ? usdtPool : dfcPool;
-      let amount = await premiumContract.getAmountFromDollar(
-        ethers.utils.parseEther(stakingAmount.toString())
-      );
-      const dfcBalance = await erc20Contract.balanceOf(address);
-      if (amount.gt(dfcBalance)) {
-        NotificationManager.warning("Insufficient DFC balance", "", 5000);
-        setLoading(false);
+      if (parseFloat(stakingAmount) < 0.25 || parseFloat(stakingAmount) > 5) {
+        window.alert("Amount must be a number between 0.5 and 5 BNB");
         return;
       }
+      let amount = ethers.utils.parseEther(stakingAmount.toString());
 
-      const allowance = await erc20Contract.allowance(
-        address,
-        premiumContract.address
-      );
-
-      if (parseInt(allowance) === 0) {
-        const totalSupply = await erc20Contract.totalSupply();
-        let approvalTx = await erc20Contract.approve(
-          premiumContract.address,
-          totalSupply
-        );
-        console.log(approvalTx);
-        await provider.waitForTransaction(approvalTx.hash, 1, 45000);
-      }
-
-      const tx = await farmContract.stake(
+      const tx = await defipayPoolContract.joinDefipayPool(
         currentAccount.id,
-        ethers.utils.parseEther(stakingAmount.toString()),
-        poolID
+        currentAccount.referralID,
+        { value: amount }
       );
       const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
       setLoading(false);
@@ -82,9 +59,17 @@ const StakingCard = ({
 
       NotificationManager.success("Transaction succeeded", "", 5000);
     } catch (error) {
-      console.error(error)
-      NotificationManager.warning("Transaction failed", "", 3000);
-      setLoading(false)
+      let msg;
+      if (error.data && error.data.message) {
+        msg = error.data.message;
+        if (msg.indexOf("insufficient funds") > -1) {
+          msg = "Insufficient funds";
+          window.alert(msg);
+        }
+      }
+      NotificationManager.warning(msg || "Transaction failed", "", 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,25 +78,23 @@ const StakingCard = ({
       <div className="icon-row-item mb-4">
         <Card>
           <CardBody className="text-center">
-            <p className="lead text-center">{pkg}</p>
+            <p className="lead text-center">DEFIPAY POOL</p>
             <i className="iconsminds-diamond" />
             <ul className="list-unstyled ">
               <li>
                 <p className="mb-2">
-                  Interest Rate:{" "}
-                  <span className="card-value">{interestRate}%</span>
+                  Interest Rate: <span className="card-value">100%</span>
                 </p>
               </li>
               <li>
                 <p className=" mb-2">
-                  Maturity Period:{" "}
-                  <span className="card-value">{maturityPeriod} Months</span>{" "}
+                  Maturity Period: <span className="card-value">3 Months</span>{" "}
                 </p>
               </li>
               <li>
                 <div className="lead text-center">
                   <InputGroup className="mb-3 mt-2">
-                    <span className="input-group-text">$</span>
+                    <span className="input-group-text">BNB</span>
 
                     <Input
                       value={stakingAmount}
@@ -135,13 +118,6 @@ const StakingCard = ({
               <li>
                 <p>Keep Stake As</p>
                 <ButtonGroup>
-                  <Button
-                    color="primary"
-                    onClick={() => setInvestmentMode(1)}
-                    active={investmentMode === 1}
-                  >
-                    USDT
-                  </Button>
                   <Button
                     color="primary"
                     onClick={() => setInvestmentMode(2)}
@@ -205,4 +181,4 @@ const mapStateToProps = ({ authUser }) => {
   const { currentAccount } = authUser;
   return { currentAccount };
 };
-export default injectIntl(connect(mapStateToProps, {})(StakingCard));
+export default injectIntl(connect(mapStateToProps, {})(DefipayStakingCard));

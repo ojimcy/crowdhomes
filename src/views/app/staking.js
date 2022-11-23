@@ -9,6 +9,7 @@ import useBlockchain from "blockchain/useBlockchain";
 import StakingCard from "./staking/StakingCard";
 import {
   ARMY_STAKE,
+  DEFIPAY_POOL,
   DIAMOND_DFC_POOL,
   DIAMOND_USDT_POOL,
   GOLD_DFC_POOL,
@@ -17,6 +18,7 @@ import {
   SILVER_USDT_POOL,
 } from "blockchain/contracts";
 import { BigNumber } from "ethers";
+import DefipayStakingCard from "./staking/DefipayStakingCard";
 
 const Staking = ({ match, currentAccount, history }) => {
   const { isConnected } = useAccount();
@@ -33,6 +35,7 @@ const Staking = ({ match, currentAccount, history }) => {
 
       allStakes = []
 
+      await fetchStakes(DEFIPAY_POOL, 18, 'DFC')
       await fetchStakes(ARMY_STAKE, 18, 'USDT')
       
       await fetchStakes(DIAMOND_USDT_POOL, 18, 'USDT')
@@ -91,6 +94,9 @@ const Staking = ({ match, currentAccount, history }) => {
 
         <Colxx className="icon-cards-row" md="12">
           <Row>
+            <Colxx md="4" xxs="12">
+              <DefipayStakingCard/>
+            </Colxx>
             <Colxx md="4" xxs="12">
               <StakingCard
                 pkg={"DIAMOND"}

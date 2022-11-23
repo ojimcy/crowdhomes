@@ -2,6 +2,7 @@ import premiumAbi from "./abi/premium";
 import erc20Abi from "./abi/erc20";
 import teamAbi from "./abi/team";
 import farmAbi from "./abi/farm";
+import defipayPoolAbi from "./abi/defipayPool";
 import { dfc, premium, system } from "./contracts";
 import { useAccount, useContract, useNetwork, useSigner } from "wagmi";
 
@@ -45,6 +46,12 @@ const useBlockchain = () => {
     signerOrProvider: signerData,
   });
 
+  const defipayPoolContract = useContract({
+    addressOrName: premium,
+    contractInterface: defipayPoolAbi,
+    signerOrProvider: signerData,
+  });
+
   return {
     correctNetwork,
     premiumContract,
@@ -52,6 +59,7 @@ const useBlockchain = () => {
     systemContract,
     teamContract,
     farmContract,
+    defipayPoolContract,
   };
 };
 export default useBlockchain;
