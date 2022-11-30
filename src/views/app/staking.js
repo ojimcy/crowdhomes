@@ -9,6 +9,7 @@ import useBlockchain from "blockchain/useBlockchain";
 import StakingCard from "./staking/StakingCard";
 import {
   ARMY_STAKE,
+  DEFIPAY_BNB_POOL,
   DEFIPAY_POOL,
   DIAMOND_DFC_POOL,
   DIAMOND_USDT_POOL,
@@ -17,15 +18,20 @@ import {
   SILVER_DFC_POOL,
   SILVER_USDT_POOL,
 } from "blockchain/contracts";
-import { BigNumber } from "ethers";
-import DefipayStakingCard from "./staking/DefipayStakingCard";
+import { BigNumber, ethers } from "ethers";
 
 const Staking = ({ match, currentAccount, history }) => {
   const { isConnected } = useAccount();
-  const { premiumContract, systemContract, erc20Contract, farmContract, correctNetwork } = useBlockchain();
-  const [stakes, setStakes] = useState([])
+  const {
+    premiumContract,
+    systemContract,
+    erc20Contract,
+    farmContract,
+    correctNetwork,
+  } = useBlockchain();
+  const [stakes, setStakes] = useState([]);
 
-  let allStakes = []
+  let allStakes = [];
 
   useEffect(() => {
     if (!isConnected || !erc20Contract || !correctNetwork) return;
@@ -33,46 +39,48 @@ const Staking = ({ match, currentAccount, history }) => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
 
-      allStakes = []
+      allStakes = [];
 
-      await fetchStakes(DEFIPAY_POOL, 18, 'DFC')
-      await fetchStakes(ARMY_STAKE, 18, 'USDT')
-      
-      await fetchStakes(DIAMOND_USDT_POOL, 18, 'USDT')
-      await fetchStakes(DIAMOND_DFC_POOL, 8, 'DFC')
+      await fetchStakes(DEFIPAY_BNB_POOL, 18, "BNB");
+      await fetchStakes(DEFIPAY_POOL, 8, "DFC");
+      await fetchStakes(ARMY_STAKE, 18, "USDT");
 
-      await fetchStakes(SILVER_USDT_POOL, 18, 'USDT')
-      await fetchStakes(SILVER_DFC_POOL, 8, 'DFC')
+      await fetchStakes(DIAMOND_USDT_POOL, 18, "USDT");
+      await fetchStakes(DIAMOND_DFC_POOL, 8, "DFC");
 
-      await fetchStakes(GOLD_USDT_POOL, 18, 'USDT')
-      await fetchStakes(GOLD_DFC_POOL, 8, 'DFC')
+      await fetchStakes(SILVER_USDT_POOL, 18, "USDT");
+      await fetchStakes(SILVER_DFC_POOL, 8, "DFC");
 
-      setStakes(allStakes)
-      
+      await fetchStakes(GOLD_USDT_POOL, 18, "USDT");
+      await fetchStakes(GOLD_DFC_POOL, 8, "DFC");
+
+      setStakes(allStakes);
     };
 
     const fetchStakes = async (poolID, decimals, preservationMode) => {
-      let stakeCountReq = await farmContract.stakeCount(currentAccount.id, poolID)
-      let stakeCount = parseInt(stakeCountReq)
-      const multiplier = BigNumber.from([10]).pow(BigNumber.from([decimals]))
-      for(let i = 0; i < stakeCount; i++) {
-        let stake = await farmContract.stakeInfo(currentAccount.id, poolID, i)
-        const amount = stake.amount.div(multiplier)
+      let stakeCountReq = await farmContract.stakeCount(
+        currentAccount.id,
+        poolID
+      );
+      let stakeCount = parseInt(stakeCountReq);
+      for (let i = 0; i < stakeCount; i++) {
+        let stake = await farmContract.stakeInfo(currentAccount.id, poolID, i);
+        const amount = ethers.utils.formatUnits(stake.amount, decimals);
         allStakes.push({
           i,
           amount: parseInt(amount),
           apr: parseInt(stake.apr),
-          startDate: new Date(parseInt(stake.startDate)*1000).toDateString(),
+          startDate: new Date(parseInt(stake.startDate) * 1000).toDateString(),
           unstaked: stake.unstaked,
           preservationMode: preservationMode,
-        })
+        });
       }
-    }
+    };
 
     try {
       fn();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }, [erc20Contract]);
 
@@ -94,9 +102,6 @@ const Staking = ({ match, currentAccount, history }) => {
 
         <Colxx className="icon-cards-row" md="12">
           <Row>
-            <Colxx md="4" xxs="12">
-              <DefipayStakingCard/>
-            </Colxx>
             <Colxx md="4" xxs="12">
               <StakingCard
                 pkg={"DIAMOND"}
@@ -140,17 +145,17 @@ const Staking = ({ match, currentAccount, history }) => {
             </tr>
           </thead>
           <tbody>
-          {
-            stakes.map((stake, i) => {
-              return <tr key={i}>
-                <td>{i+1}</td>
-                <td>{stake.preservationMode}</td>
-                <td>{stake.amount}</td>
-                <td>{stake.apr}</td>
-                <td>{stake.startDate}</td>
-              </tr>
-            })
-          }
+            {stakes.map((stake, i) => {
+              return (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{stake.preservationMode}</td>
+                  <td>{stake.amount}</td>
+                  <td>{stake.apr}</td>
+                  <td>{stake.startDate}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
       </Row>

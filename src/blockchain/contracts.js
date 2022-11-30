@@ -17,3 +17,4 @@ export const USDT_FARM = 0; // farmType: 0
 export const DFC_FARM = 1; // farmType: 1
 
 export const DEFIPAY_POOL = 7; // farmType: 1
+export const DEFIPAY_BNB_POOL = 8; // farmType: 1
