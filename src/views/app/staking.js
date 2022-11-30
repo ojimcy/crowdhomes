@@ -18,7 +18,7 @@ import {
   SILVER_DFC_POOL,
   SILVER_USDT_POOL,
 } from "blockchain/contracts";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
 const Staking = ({ match, currentAccount, history }) => {
   const { isConnected } = useAccount();
@@ -66,9 +66,10 @@ const Staking = ({ match, currentAccount, history }) => {
       for (let i = 0; i < stakeCount; i++) {
         let stake = await farmContract.stakeInfo(currentAccount.id, poolID, i);
         const amount = ethers.utils.formatUnits(stake.amount, decimals);
+        console.log(parseInt(stake.amount), decimals, amount)
         allStakes.push({
           i,
-          amount: parseInt(amount),
+          amount: parseFloat(amount),
           apr: parseInt(stake.apr),
           startDate: new Date(parseInt(stake.startDate) * 1000).toDateString(),
           unstaked: stake.unstaked,
