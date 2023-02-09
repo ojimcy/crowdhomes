@@ -8,6 +8,12 @@ const data = [
     to: `${adminRoot}/realfi`,
   },
   {
+    id: "staking",
+    icon: "simple-icon-briefcase",
+    label: "menu.staking",
+    to: `${adminRoot}/staking`,
+  },
+  {
     id: "account",
     icon: "simple-icon-user",
     label: "menu.army",
@@ -51,12 +57,6 @@ const data = [
       //   roles: ["user"],
       // },
     ],
-  },
-  {
-    id: "staking",
-    icon: "simple-icon-briefcase",
-    label: "menu.staking",
-    to: `${adminRoot}/staking`,
   },
 ];
 export default data;

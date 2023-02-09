@@ -26,7 +26,7 @@ const StakingCard = ({
   dfcPool,
 }) => {
   const [stakingAmount, setStakingAmount] = useState(100);
-  const [investmentMode, setInvestmentMode] = useState(1);
+  const [investmentMode, setInvestmentMode] = useState(2);
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showStakingModal, setShowStakingModal] = useState(false);
   const { isConnected, address } = useAccount();
@@ -137,17 +137,17 @@ const StakingCard = ({
                 <ButtonGroup>
                   <Button
                     color="primary"
-                    onClick={() => setInvestmentMode(1)}
-                    active={investmentMode === 1}
-                  >
-                    USDT
-                  </Button>
-                  <Button
-                    color="primary"
                     onClick={() => setInvestmentMode(2)}
                     active={investmentMode === 2}
                   >
                     DFC
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => setInvestmentMode(1)}
+                    active={investmentMode === 1}
+                  >
+                    USDT
                   </Button>
                 </ButtonGroup>
               </li>
