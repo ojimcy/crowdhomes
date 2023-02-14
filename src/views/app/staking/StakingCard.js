@@ -38,13 +38,12 @@ const StakingCard = ({
 
   const stake = async () => {
     setLoading(true);
+    setInvestmentMode(2);
     try {
       let poolID = investmentMode === 1 ? usdtPool : dfcPool;
-      let amount = await premiumContract.getAmountFromDollar(
-        ethers.utils.parseEther(stakingAmount.toString())
-      );
+      let amount = ethers.utils.parseUnits(stakingAmount.toString(), 8);
       const dfcBalance = await erc20Contract.balanceOf(address);
-      if (amount.gt(dfcBalance)) {
+      if (amount.gte(dfcBalance)) {
         NotificationManager.warning("Insufficient DFC balance", "", 5000);
         setLoading(false);
         return;
@@ -65,11 +64,7 @@ const StakingCard = ({
         await provider.waitForTransaction(approvalTx.hash, 1, 45000);
       }
 
-      const tx = await farmContract.stake(
-        currentAccount.id,
-        ethers.utils.parseEther(stakingAmount.toString()),
-        poolID
-      );
+      const tx = await farmContract.stake(currentAccount.id, amount, poolID);
       const receipt = await provider.waitForTransaction(tx.hash, 1, 45000);
       setLoading(false);
       if (!receipt || !receipt.blockNumber) {
@@ -82,9 +77,9 @@ const StakingCard = ({
 
       NotificationManager.success("Transaction succeeded", "", 5000);
     } catch (error) {
-      console.error(error)
+      console.error(error);
       NotificationManager.warning("Transaction failed", "", 3000);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -130,26 +125,6 @@ const StakingCard = ({
                     </InputGroupAddon>
                   </InputGroup>
                 </div>
-              </li>
-
-              <li>
-                <p>Keep Stake As</p>
-                <ButtonGroup>
-                  <Button
-                    color="primary"
-                    onClick={() => setInvestmentMode(2)}
-                    active={investmentMode === 2}
-                  >
-                    DFC
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={() => setInvestmentMode(1)}
-                    active={investmentMode === 1}
-                  >
-                    USDT
-                  </Button>
-                </ButtonGroup>
               </li>
             </ul>
 
