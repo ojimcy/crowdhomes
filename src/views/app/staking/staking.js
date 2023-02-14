@@ -130,7 +130,7 @@ const Staking = ({ match, currentAccount, history }) => {
             </Colxx>
             <Colxx md="4" xxs="12">
               <StakingCard
-                pkg={"DIAMOND"}
+                pkg={"GOLD"}
                 maturityPeriod={12}
                 interestRate={15}
                 usdtPool={GOLD_USDT_POOL}
