@@ -21,16 +21,22 @@ import { BigNumber, ethers } from "ethers";
 import { useAccount } from "wagmi";
 
 const Staking = ({ match, currentAccount }) => {
-  const { farmContract } = useBlockchain();
+  const { farmContract, correctNetwork } = useBlockchain();
   const [stakes, setStakes] = useState([]);
   const { isConnected } = useAccount();
 
-  const stakesOut = []
+  const stakesOut = [];
 
   useEffect(() => {
-    if (!currentAccount || currentAccount.id < 1 || !isConnected) return;
+    if (
+      !isConnected ||
+      !farmContract ||
+      !farmContract.provider ||
+      !correctNetwork
+    )
+      return;
+    if (!currentAccount || currentAccount.id < 1) return;
     window.farmContract = farmContract;
-    window.ethers = ethers;
 
     const fn = async () => {
       try {
@@ -42,7 +48,7 @@ const Staking = ({ match, currentAccount }) => {
         await fetchStakes(GOLD_DFC_POOL, DFC_FARM);
         await fetchStakes(GOLD_USDT_POOL, USDT_FARM);
 
-        setStakes(stakesOut)
+        setStakes(stakesOut);
       } catch (error) {
         console.log(error);
       }

@@ -42,7 +42,7 @@ const Dashboard = ({ match, currentAccount, history }) => {
   }, [isConnected]);
 
   useEffect(() => {
-    if (!isConnected || !erc20Contract || !correctNetwork) return;
+    if (!isConnected || !erc20Contract || !erc20Contract.provider || !correctNetwork) return;
     const fn = async () => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;

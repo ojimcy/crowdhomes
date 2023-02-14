@@ -36,11 +36,6 @@ const StakingModal = ({
   const [dfcBalance, setDfcBalance] = useState(0);
 
   useEffect(() => {
-    window.systemContract = systemContract;
-    window.premiumContract = premiumContract;
-  }, [systemContract, premiumContract]);
-
-  useEffect(() => {
     if (txSuccess) {
       setIsLoading(false);
       NotificationManager.warning(
@@ -62,7 +57,7 @@ const StakingModal = ({
   }, [txError]);
 
   useEffect(() => {
-    if (!isConnected || !erc20Contract) return;
+    if (!isConnected || !erc20Contract.provider) return;
     const fn = async () => {
       window.systemContract = systemContract;
       window.erc20Contract = erc20Contract;

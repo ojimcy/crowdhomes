@@ -34,7 +34,14 @@ const Staking = ({ match, currentAccount, history }) => {
   let allStakes = [];
 
   useEffect(() => {
-    if (!isConnected || !erc20Contract || !correctNetwork) return;
+    if (
+      !isConnected ||
+      !erc20Contract ||
+      !erc20Contract.provider ||
+      !correctNetwork
+    ) {
+      return;
+    }
     const fn = async () => {
       window.systemContract = systemContract;
       window.premiumContract = premiumContract;
@@ -66,7 +73,7 @@ const Staking = ({ match, currentAccount, history }) => {
       for (let i = 0; i < stakeCount; i++) {
         let stake = await farmContract.stakeInfo(currentAccount.id, poolID, i);
         const amount = ethers.utils.formatUnits(stake.amount, decimals);
-        console.log(parseInt(stake.amount), decimals, amount)
+        console.log(parseInt(stake.amount), decimals, amount);
         allStakes.push({
           i,
           amount: parseFloat(amount),
@@ -107,7 +114,7 @@ const Staking = ({ match, currentAccount, history }) => {
               <StakingCard
                 pkg={"DIAMOND"}
                 maturityPeriod={6}
-                interestRate={10}
+                interestRate={5}
                 usdtPool={DIAMOND_USDT_POOL}
                 dfcPool={DIAMOND_DFC_POOL}
               />
@@ -116,7 +123,7 @@ const Staking = ({ match, currentAccount, history }) => {
               <StakingCard
                 pkg={"SILVER"}
                 maturityPeriod={9}
-                interestRate={15}
+                interestRate={10}
                 usdtPool={SILVER_USDT_POOL}
                 dfcPool={SILVER_DFC_POOL}
               />
@@ -125,7 +132,7 @@ const Staking = ({ match, currentAccount, history }) => {
               <StakingCard
                 pkg={"DIAMOND"}
                 maturityPeriod={12}
-                interestRate={25}
+                interestRate={15}
                 usdtPool={GOLD_USDT_POOL}
                 dfcPool={GOLD_DFC_POOL}
               />
