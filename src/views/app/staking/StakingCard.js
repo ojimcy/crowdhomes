@@ -25,7 +25,7 @@ const StakingCard = ({
   usdtPool,
   dfcPool,
 }) => {
-  const [stakingAmount, setStakingAmount] = useState(100);
+  const [stakingAmount, setStakingAmount] = useState(10000);
   const [investmentMode, setInvestmentMode] = useState(2);
   const [showConnectWalletModal, setShowConnectWalletModal] = useState();
   const [showStakingModal, setShowStakingModal] = useState(false);
@@ -34,7 +34,10 @@ const StakingCard = ({
   const [loading, setLoading] = useState(false);
   const provider = useProvider();
 
-  const takeMaxAmount = () => {};
+  const takeMaxAmount = async () => {
+    const dfcBalance = await erc20Contract.balanceOf(address);
+    setStakingAmount(ethers.utils.formatUnits(dfcBalance, 8));
+  };
 
   const stake = async () => {
     setLoading(true);
@@ -106,7 +109,7 @@ const StakingCard = ({
               <li>
                 <div className="lead text-center">
                   <InputGroup className="mb-3 mt-2">
-                    <span className="input-group-text">$</span>
+                    <span className="input-group-text">DFC</span>
 
                     <Input
                       value={stakingAmount}
