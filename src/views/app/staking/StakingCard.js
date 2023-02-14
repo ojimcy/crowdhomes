@@ -112,6 +112,7 @@ const StakingCard = ({
                     <span className="input-group-text">DFC</span>
 
                     <Input
+                      placeholder="DFC amount"
                       value={stakingAmount}
                       onChange={(e) => setStakingAmount(e.target.value)}
                     />
