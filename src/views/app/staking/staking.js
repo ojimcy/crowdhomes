@@ -99,7 +99,7 @@ const Staking = ({ match, currentAccount }) => {
             <Colxx md="4" xxs="12">
               <StakingCard
                 pkg={"DIAMOND"}
-                interestRate={10}
+                interestRate={5}
                 maturityPeriod={6}
                 usdtPool={DIAMOND_USDT_POOL}
                 dfcPool={DIAMOND_DFC_POOL}
@@ -108,7 +108,7 @@ const Staking = ({ match, currentAccount }) => {
             <Colxx md="4" xxs="12">
               <StakingCard
                 pkg={"SILVER"}
-                interestRate={15}
+                interestRate={10}
                 maturityPeriod={9}
                 usdtPool={SILVER_USDT_POOL}
                 dfcPool={SILVER_DFC_POOL}
@@ -119,7 +119,7 @@ const Staking = ({ match, currentAccount }) => {
                 usdtPool={GOLD_USDT_POOL}
                 dfcPool={GOLD_DFC_POOL}
                 pkg={"GOLD"}
-                interestRate={25}
+                interestRate={15}
                 maturityPeriod={12}
               />
             </Colxx>
